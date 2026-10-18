@@ -1,0 +1,47 @@
+/* Panel 3: Lever requirements (§4.6). All four detail panels are in the HTML; inactive
+   ones carry `hidden`. Graphic stacks above text on mobile; two columns from 800px. */
+
+.panel--detail {
+  background: var(--rare-color-background-default);
+  border-top: var(--viz-detail-rule) solid var(--rare-color-action-primary);
+  scroll-margin-top: var(--viz-scroll-offset);
+}
+
+.lever-detail-panel {
+  display: grid;
+  gap: var(--rare-space-7);
+}
+
+.lever-detail-panel[hidden] {
+  display: none;
+}
+
+@media (min-width: 800px) {
+  .lever-detail-panel {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+}
+
+.lever-detail__graphic {
+  aspect-ratio: 4 / 3;
+  border: var(--rare-border-width-default) solid var(--viz-placeholder-line);
+  border-radius: var(--rare-radius-card);
+  background: var(--viz-placeholder-fill);
+}
+
+.lever-detail__text {
+  display: grid;
+  gap: var(--rare-space-3);
+}
+
+.lever-detail__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rare-space-2);
+  margin-block-start: var(--rare-space-4);
+}
+
+.lever-detail__chips .ph--pill {
+  width: calc(var(--rare-space-11) * 2);
+}

@@ -1,0 +1,134 @@
+/**
+ * Rare Strategy System Viz — product-scope tokens.
+ *
+ * PRODUCT-SCOPE — NOT PUBLISHED. Every --viz-* token here is composition for this site only
+ * (card offsets, stack inset, orchestrator size, lever card widths, nav logo size, motion legs).
+ * Each one references --rare-* tokens from css/rare-core.css; none introduces a primitive.
+ * Viewport-relative clamp() math lives here and only here (Core README, "Core vs product").
+ *
+ * Values Core does not cover are bound to the nearest token and logged in docs/TOKEN_GAPS.md.
+ * Media-query breakpoints cannot read custom properties, so they are listed below as a
+ * documented set and reused unchanged in every component file:
+ *   mobile  < 640px   ·   tablet 640–1023px   ·   Panel 3 two-column ≥ 800px   ·   desktop ≥ 1024px
+ */
+
+:root {
+  /* ---- Layout ------------------------------------------------------------------------- */
+
+  /* PRODUCT-SCOPE: page column. Core container is 1220px; the spec asks for "about 1200px". */
+  --viz-content-max: var(--rare-size-container);
+  /* PRODUCT-SCOPE: side gutter, fluid from 16px to 32px. Core's section gutter is space-6. */
+  --viz-gutter: clamp(var(--rare-space-4), 4vw, var(--rare-space-7));
+  /* PRODUCT-SCOPE: vertical rhythm inside a panel. */
+  --viz-panel-pad-block: clamp(var(--rare-space-8), 6vw, var(--rare-space-11));
+  /* PRODUCT-SCOPE: statement → stack gap. §4.2 asks for space-6 to space-7. */
+  --viz-statement-gap: clamp(var(--rare-space-6), 3vw, var(--rare-space-7));
+  /* PRODUCT-SCOPE: moment title, a long phrase clamped between 700 and 900 (§4.2). */
+  --viz-moment-title-size: clamp(var(--rare-font-size-700), 4vw, var(--rare-font-size-900));
+  /* PRODUCT-SCOPE: breathing room above Panel 3 when the Levers menu scrolls to it (no sticky header). */
+  --viz-scroll-offset: var(--rare-space-4);
+
+  /* ---- Global nav --------------------------------------------------------------------- */
+
+  /* PRODUCT-SCOPE: stacked lockup display height. 56px desktop = 48 + 8; 44px mobile = 40 + 4.
+     Core has no 56px or 44px step; composed from the space ramp (see TOKEN_GAPS.md). */
+  --viz-nav-logo-height: calc(var(--rare-space-9) + var(--rare-space-2));
+  --viz-nav-logo-height-mobile: calc(var(--rare-space-8) + var(--rare-space-1));
+  /* PRODUCT-SCOPE: logo tab (§4.1): padding around the logo, how far it hangs over Panel 1,
+     and its shadow (Core has no shadow tokens; see TOKEN_GAPS.md). */
+  --viz-logo-tab-pad: var(--rare-space-4);
+  --viz-logo-tab-overhang: var(--rare-space-6);
+  --viz-logo-tab-shadow: var(--viz-shadow-soft);
+  /* PRODUCT-SCOPE: disclosure menu panel width. */
+  --viz-nav-menu-width: calc(var(--rare-space-11) * 5);
+
+  /* ---- Panel 1: card stack ------------------------------------------------------------ */
+
+  /* PRODUCT-SCOPE: front card width within the stack region. */
+  --viz-stack-card-width: min(100%, calc(var(--rare-size-container-narrow) * 0.75));
+  --viz-stack-card-ratio: 4 / 3;
+  /* PRODUCT-SCOPE: backplate inset inside the card frame (§4.3: 8–12%). */
+  --viz-stack-inset: 10%;
+  /* PRODUCT-SCOPE: how far back cards peek out. Desktop ~8% of card width; mobile 16–24px. */
+  --viz-stack-peek: clamp(var(--rare-space-4), 4vw, var(--rare-space-10));
+
+  /* ---- Orchestrator ------------------------------------------------------------------- */
+
+  /* PRODUCT-SCOPE: right gutter that holds the figure on desktop, and the figure's size. */
+  --viz-orchestrator-gutter: calc(var(--rare-space-10) * 2);
+  --viz-orchestrator-size: calc(var(--rare-space-10) * 1.5);
+  --viz-orchestrator-size-mobile: var(--rare-space-10);
+
+  /* ---- Panel 2: lever track ----------------------------------------------------------- */
+
+  /* PRODUCT-SCOPE: lever card width. ~1.2 cards visible on mobile, ~2.5 on tablet,
+     all four on desktop. The track subtracts its gaps before dividing. */
+  --viz-lever-gap: var(--rare-space-4);
+  --viz-lever-card-width: calc((100% - var(--viz-lever-gap)) / 1.2);
+  --viz-lever-card-width-tablet: calc((100% - 2 * var(--viz-lever-gap)) / 2.5);
+  --viz-lever-card-width-desktop: calc((100% - 3 * var(--viz-lever-gap)) / 4);
+  --viz-lever-card-min-height: calc(var(--rare-space-11) * 2.5);
+  /* PRODUCT-SCOPE: selected-lever caret (half-width of the triangle). */
+  --viz-lever-caret: var(--rare-space-3);
+  /* PRODUCT-SCOPE: Panel 3 top rule meeting the caret (§6.4: 4px). */
+  --viz-detail-rule: var(--rare-space-1);
+
+  /* ---- Elevation shadows (gap: Core has no shadow tokens) ----------------------------- */
+
+  /* PRODUCT-SCOPE: composed from Core ink + space. Logged in TOKEN_GAPS.md. */
+  --viz-shadow-soft: 0 var(--rare-space-1) var(--rare-space-3) color-mix(in srgb, var(--rare-color-ink) 10%, transparent);
+  --viz-shadow-lifted: 0 var(--rare-space-3) var(--rare-space-7) color-mix(in srgb, var(--rare-color-ink) 18%, transparent);
+
+  /* ---- Motion (gap: Core has no duration above 200ms) --------------------------------- */
+
+  /* PRODUCT-SCOPE: multiples of motion.duration.base (200ms). Logged in TOKEN_GAPS.md. */
+  --viz-motion-flip-leg: calc(var(--rare-motion-duration-base) * 2.25);         /* 450ms */
+  --viz-motion-flip-leg-reduced: calc(var(--rare-motion-duration-base) * 1.5);  /* 300ms */
+  --viz-motion-flip-offset: calc(var(--rare-motion-duration-base) * 0.5);       /* 100ms */
+  --viz-motion-pipe: calc(var(--rare-motion-duration-base) * 2.5);              /* 500ms */
+
+  /* ---- Stacking ----------------------------------------------------------------------- */
+
+  /* Page z-index uses only --rare-elevation-z-* (max 30). Overnote's UI sits at ~2147483000. */
+  --viz-z-header: var(--rare-elevation-z-overlay);
+  --viz-z-nav-menu: var(--rare-elevation-z-modal);
+
+  /* ---- Placeholder shapes (§4.8 skeleton) --------------------------------------------- */
+
+  --viz-placeholder-fill: var(--rare-color-background-muted);
+  --viz-placeholder-fill-strong: var(--rare-color-border-default);
+  --viz-placeholder-line: var(--rare-color-border-default);
+  --viz-placeholder-bar: var(--rare-space-4);
+  --viz-placeholder-bar-lg: var(--rare-space-8);
+
+  /* ---- Overnote theme mapping (REQUIREMENTS §9) --------------------------------------- */
+
+  --overnote-font: var(--rare-font-family-text);
+  --overnote-accent: var(--rare-color-action-primary);
+  --overnote-accent-contrast: var(--rare-color-text-on-brand);
+  --overnote-focus-ring: 0 0 0 var(--rare-border-width-focus) var(--rare-color-focus-ring);
+  --overnote-surface: var(--rare-color-background-default);
+  --overnote-surface-muted: var(--rare-color-background-muted);
+  --overnote-text: var(--rare-color-text-default);
+  --overnote-text-muted: var(--rare-color-text-muted);
+  --overnote-border: var(--rare-color-border-default);
+  --overnote-danger: var(--rare-color-feedback-error);
+  --overnote-mode-off: var(--rare-color-text-muted);
+  --overnote-radius: var(--rare-radius-lg);
+  --overnote-radius-sm: var(--rare-radius-md);
+}
+
+@media (max-width: 639px) {
+  :root {
+    --viz-nav-logo-height: var(--viz-nav-logo-height-mobile);
+    --viz-orchestrator-size: var(--viz-orchestrator-size-mobile);
+  }
+}
+
+@media (min-width: 640px) {
+  :root { --viz-lever-card-width: var(--viz-lever-card-width-tablet); }
+}
+
+@media (min-width: 1024px) {
+  :root { --viz-lever-card-width: var(--viz-lever-card-width-desktop); }
+}

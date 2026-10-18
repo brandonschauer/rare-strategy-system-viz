@@ -1,0 +1,51 @@
+/* Footer (§4.7): concept note, reviewer line and build date. */
+
+.site-footer {
+  padding-block: var(--rare-space-9);
+  background: var(--rare-color-background-muted);
+  color: var(--rare-color-text-muted);
+  font-size: var(--rare-font-size-300);
+}
+
+.site-footer__inner {
+  display: grid;
+  gap: var(--rare-space-3);
+  max-width: var(--rare-size-container-narrow);
+}
+
+.site-footer__note {
+  line-height: var(--rare-line-height-relaxed);
+}
+
+/* Review export (injected by js/annotate.js; in Overnote's ignore list so it stays clickable). */
+.review-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--rare-space-3);
+}
+
+.review-tools__export {
+  min-height: var(--rare-size-control-md);
+  padding: var(--rare-space-0) var(--rare-space-4);
+  border: var(--rare-border-width-default) solid var(--rare-color-action-primary);
+  border-radius: var(--rare-radius-md);
+  background: var(--rare-color-background-default);
+  color: var(--rare-color-action-primary);
+  font-weight: var(--rare-font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--rare-motion-duration-fast) var(--rare-motion-easing-standard);
+}
+
+.review-tools__export:hover {
+  background: var(--rare-color-blue-50);
+  color: var(--rare-color-action-primary-hover);
+}
+
+.review-tools__status {
+  font-size: var(--rare-font-size-200);
+}
+
+.site-footer__meta {
+  font-size: var(--rare-font-size-200);
+}

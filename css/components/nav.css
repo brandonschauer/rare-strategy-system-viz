@@ -1,0 +1,228 @@
+/* Site header + global nav (§4.1), modelled on the top of rare.org's header: the stacked logo
+   in a white tab hanging from the top edge, then the site title and menus sitting straight on
+   Panel 1's canvas. No bar background, no bottom rule, not sticky: it scrolls away with the page.
+   Breakpoints: see the documented set in viz-tokens.css. */
+
+.site-header {
+  position: relative;
+  z-index: var(--viz-z-header);
+}
+
+.site-header__inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "tab nav"
+    "title title";
+  align-items: center;
+  column-gap: var(--rare-space-4);
+  max-width: var(--viz-content-max);
+  margin-inline: auto;
+  padding-inline: var(--viz-gutter);
+}
+
+/* Logo tab: square top corners flush with the viewport, rounded bottom corners, soft shadow. */
+.site-header__logo-tab {
+  grid-area: tab;
+  align-self: start;
+  justify-self: start;
+  display: block;
+  padding: var(--viz-logo-tab-pad);
+  border-end-start-radius: var(--rare-radius-lg);
+  border-end-end-radius: var(--rare-radius-lg);
+  background: var(--rare-color-background-default);
+  box-shadow: var(--viz-logo-tab-shadow);
+}
+
+.site-header__logo-tab img {
+  width: auto;
+  height: var(--viz-nav-logo-height);
+}
+
+/* A site title, not the page heading: the moment title stays the only <h1>. */
+.site-header__title {
+  grid-area: title;
+  padding-block: var(--rare-space-3) var(--rare-space-2);
+  color: var(--rare-color-text-default);
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-500);
+  font-weight: var(--rare-font-weight-semibold);
+  line-height: var(--rare-line-height-tight);
+}
+
+.global-nav {
+  grid-area: nav;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+}
+
+/* Tablet and up: one row (tab · title · menus); the tab overhangs the top of Panel 1. */
+@media (min-width: 640px) {
+  .site-header__inner {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "tab title nav";
+    column-gap: var(--rare-space-6);
+  }
+
+  .site-header__logo-tab {
+    margin-block-end: calc(-1 * var(--viz-logo-tab-overhang));
+  }
+
+  .site-header__title {
+    padding-block: var(--rare-space-0);
+  }
+}
+
+/* ---- Buttons (Explore + menu triggers) ----------------------------------------------- */
+
+.nav-explore,
+.nav-menu__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rare-space-1);
+  min-height: var(--rare-size-control-md);
+  padding: var(--rare-space-0) var(--rare-space-3);
+  border: 0;
+  border-radius: var(--rare-radius-md);
+  background: transparent;
+  color: var(--rare-color-action-primary);
+  font-size: var(--rare-font-size-300);
+  font-weight: var(--rare-font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--rare-motion-duration-fast) var(--rare-motion-easing-standard),
+    color var(--rare-motion-duration-fast) var(--rare-motion-easing-standard);
+}
+
+.nav-explore:hover,
+.nav-menu__button:hover {
+  background: var(--rare-color-blue-50);
+  color: var(--rare-color-action-primary-hover);
+}
+
+.nav-menu__chevron {
+  width: var(--rare-space-4);
+  height: var(--rare-space-4);
+  transition: transform var(--rare-motion-duration-base) var(--rare-motion-easing-standard);
+}
+
+[aria-expanded="true"] > .nav-menu__chevron {
+  transform: rotate(180deg);
+}
+
+/* ---- Menus ---------------------------------------------------------------------------- */
+
+.nav-menu {
+  position: relative;
+}
+
+.nav-menu__list {
+  display: none;
+  padding: var(--rare-space-2);
+}
+
+.nav-menu.is-open .nav-menu__list {
+  display: grid;
+  gap: var(--rare-space-1);
+}
+
+.nav-menu__item {
+  display: grid;
+  grid-template-columns: var(--rare-space-4) 1fr;
+  align-items: center;
+  column-gap: var(--rare-space-2);
+  min-height: var(--rare-size-control-md);
+  padding: var(--rare-space-2) var(--rare-space-3);
+  border-radius: var(--rare-radius-md);
+  color: var(--rare-color-text-default);
+  font-size: var(--rare-font-size-300);
+  line-height: var(--rare-line-height-normal);
+  text-decoration: none;
+}
+
+.nav-menu__item:hover,
+.nav-menu__item:focus-visible {
+  background: var(--rare-color-background-subtle);
+  color: var(--rare-color-text-default);
+}
+
+.nav-menu__check {
+  width: var(--rare-space-4);
+  height: var(--rare-space-4);
+  color: var(--rare-color-action-primary);
+  visibility: hidden;
+}
+
+.nav-menu__item[aria-current] {
+  font-weight: var(--rare-font-weight-semibold);
+}
+
+.nav-menu__item[aria-current] .nav-menu__check {
+  visibility: visible;
+}
+
+.nav-menu__note {
+  grid-column: 2;
+  color: var(--rare-color-text-muted);
+  font-size: var(--rare-font-size-200);
+  font-weight: var(--rare-font-weight-regular);
+}
+
+/* ---- Tablet / desktop: two dropdowns beside the logo ---------------------------------- */
+
+@media (min-width: 640px) {
+  .nav-explore {
+    display: none;
+  }
+
+  .nav-sheet {
+    display: flex;
+    gap: var(--rare-space-2);
+  }
+
+  .nav-menu__list {
+    position: absolute;
+    top: calc(100% + var(--rare-space-2));
+    right: var(--rare-space-0);
+    z-index: var(--viz-z-nav-menu);
+    width: var(--viz-nav-menu-width);
+    max-width: calc(100vw - 2 * var(--viz-gutter));
+    border: var(--rare-border-width-default) solid var(--rare-color-border-default);
+    border-radius: var(--rare-radius-card);
+    background: var(--rare-color-background-default);
+    box-shadow: var(--viz-shadow-lifted);
+  }
+}
+
+/* ---- Mobile: "Explore" opens a sheet holding both menus ------------------------------- */
+
+@media (max-width: 639px) {
+  .nav-sheet {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: var(--rare-space-0);
+    left: var(--rare-space-0);
+    z-index: var(--viz-z-nav-menu);
+    max-height: calc(100vh - 100%);
+    overflow-y: auto;
+    padding: var(--rare-space-2) var(--viz-gutter) var(--rare-space-6);
+    border-bottom: var(--rare-border-width-default) solid var(--rare-color-border-default);
+    background: var(--rare-color-background-default);
+    box-shadow: var(--viz-shadow-lifted);
+  }
+
+  .is-sheet-open .nav-sheet {
+    display: grid;
+    gap: var(--rare-space-4);
+  }
+
+  .nav-menu__button {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .nav-menu__list {
+    padding-inline: var(--rare-space-0);
+  }
+}

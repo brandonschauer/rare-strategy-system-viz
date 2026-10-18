@@ -1,0 +1,169 @@
+/* Panel 1: Moment — statement (§4.2) above the card-stack scenes (§4.3).
+   Stage 1 is the frame only: static card frames, backplates and layer placeholders. */
+
+.panel--moment {
+  background: var(--rare-color-background-subtle);
+}
+
+/* ---- Statement --------------------------------------------------------------------------- */
+
+.moment-statement {
+  display: grid;
+  gap: var(--rare-space-3);
+  max-width: var(--rare-size-container-narrow);
+  margin-block-end: var(--viz-statement-gap);
+}
+
+.moment-statement .eyebrow {
+  color: var(--rare-color-lime-700);
+}
+
+.moment-title {
+  font-family: var(--rare-font-family-display);
+  font-size: var(--viz-moment-title-size);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
+}
+
+.moment-description {
+  color: var(--rare-color-text-muted);
+  font-size: var(--rare-font-size-500);
+}
+
+/* ---- Scenes region ----------------------------------------------------------------------- */
+
+.moment-visual {
+  display: grid;
+  justify-items: center;
+  gap: var(--rare-space-6);
+}
+
+@media (min-width: 1024px) {
+  .moment-visual {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+}
+
+/* The stack box leaves room for the back cards to peek left (community) and up-right (policy). */
+.card-stack {
+  position: relative;
+  width: 100%;
+  max-width: calc(var(--viz-stack-card-width) + 2 * var(--viz-stack-peek));
+  padding: var(--viz-stack-peek) var(--viz-stack-peek) var(--rare-space-0);
+}
+
+.card-stack__deck {
+  position: relative;
+  aspect-ratio: var(--viz-stack-card-ratio);
+}
+
+/* Card frame: transparent bounds that hold every layer (§4.3). One transform per frame. */
+.stack-card {
+  position: absolute;
+  inset: var(--rare-space-0);
+  --card-shift-x: 0%;
+  --card-shift-y: 0%;
+  --card-scale: 1;
+  transform: translate(var(--card-shift-x), var(--card-shift-y)) scale(var(--card-scale));
+}
+
+.stack-card[data-slot="0"] {
+  z-index: var(--rare-elevation-z-sticky);
+}
+
+.stack-card[data-slot="1"] {
+  z-index: var(--rare-elevation-z-raised);
+  --card-shift-x: calc(-1 * var(--viz-stack-peek));
+  transform-origin: right center;
+}
+
+.stack-card[data-slot="2"] {
+  z-index: var(--rare-elevation-z-base);
+  --card-shift-x: var(--viz-stack-peek);
+  --card-shift-y: calc(-1 * var(--viz-stack-peek));
+  transform-origin: left bottom;
+}
+
+/* Backplate: the smaller opaque rounded rectangle inset inside the frame. */
+.stack-card__backplate {
+  position: absolute;
+  inset: var(--viz-stack-inset);
+  border-radius: var(--rare-radius-xl);
+  background: var(--viz-placeholder-fill);
+  border: var(--rare-border-width-default) solid var(--viz-placeholder-line);
+}
+
+.stack-card[data-slot="0"] .stack-card__backplate {
+  box-shadow: var(--viz-shadow-lifted);
+}
+
+/* Content-layer slots. Placeholders deliberately overhang the backplate edge but stay inside
+   the frame, standing in for the off-the-edge art that arrives in Stage 3. */
+.stack-card__layer {
+  position: absolute;
+  border-radius: var(--rare-radius-pill);
+  background: var(--viz-placeholder-fill-strong);
+}
+
+.stack-card__layer--figure {
+  left: 40%;
+  bottom: 22%;
+  width: 18%;
+  height: 52%;
+  border-radius: var(--rare-radius-pill) var(--rare-radius-pill) var(--rare-radius-lg) var(--rare-radius-lg);
+}
+
+.stack-card__layer--overhang-start {
+  top: 4%;
+  left: 2%;
+  width: 22%;
+  height: 26%;
+}
+
+.stack-card__layer--overhang-end {
+  right: 3%;
+  bottom: 6%;
+  width: 20%;
+  height: 22%;
+}
+
+/* Label and caption: real HTML text (Stage 3); bars for now. */
+.stack-card__text {
+  position: absolute;
+  right: calc(var(--viz-stack-inset) + 4%);
+  bottom: calc(var(--viz-stack-inset) + 4%);
+  left: calc(var(--viz-stack-inset) + 4%);
+}
+
+/* ---- Next control (§4.3) ----------------------------------------------------------------- */
+
+.stack-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--rare-space-3);
+}
+
+@media (min-width: 1024px) {
+  .stack-controls {
+    flex-direction: column;
+  }
+}
+
+.stack-next {
+  display: grid;
+  place-items: center;
+  width: var(--rare-size-control-md);
+  height: var(--rare-size-control-md);
+  padding: var(--rare-space-0);
+  border: 0;
+  border-radius: var(--rare-radius-pill);
+  background: var(--viz-placeholder-fill-strong);
+  color: var(--rare-color-text-muted);
+  cursor: pointer;
+}
+
+.stack-next svg {
+  width: var(--rare-space-5);
+  height: var(--rare-space-5);
+}

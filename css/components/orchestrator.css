@@ -1,0 +1,78 @@
+/* Orchestration zone (§4.4): Panels 1 and 2, the seam between them and the pipe overlay.
+   Stage 1: a static silhouette and a dashed placeholder connector. */
+
+.orchestration {
+  position: relative;
+}
+
+/* The pipe overlay Stage 2 draws into. Decorative and never interactive. */
+.orchestrator-pipe {
+  position: absolute;
+  inset: var(--rare-space-0);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: var(--rare-elevation-z-raised);
+}
+
+.orchestration__seam {
+  display: flex;
+  justify-content: center;
+  max-width: var(--viz-content-max);
+  margin-inline: auto;
+  padding-inline: var(--viz-gutter);
+}
+
+.orchestrator {
+  position: relative;
+  z-index: var(--rare-elevation-z-sticky);
+  display: grid;
+  justify-items: center;
+  width: var(--viz-orchestrator-size);
+}
+
+/* Desktop: the figure sits in the right gutter, straddling the Panel 1 / Panel 2 boundary. */
+@media (min-width: 1024px) {
+  .orchestration__seam {
+    position: relative;
+    height: var(--rare-space-0);
+  }
+
+  .orchestrator {
+    position: absolute;
+    top: var(--rare-space-0);
+    right: var(--viz-gutter);
+    width: var(--viz-orchestrator-gutter);
+    transform: translateY(-50%);
+  }
+}
+
+/* Silhouette placeholder: head + body, neutral and static. */
+.orchestrator__silhouette {
+  display: grid;
+  justify-items: center;
+  gap: var(--rare-space-1);
+  width: var(--viz-orchestrator-size);
+}
+
+.orchestrator__head {
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: var(--rare-radius-pill);
+  background: var(--viz-placeholder-fill-strong);
+}
+
+.orchestrator__body {
+  width: 62%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--rare-radius-xl) var(--rare-radius-xl) var(--rare-radius-md) var(--rare-radius-md);
+  background: var(--viz-placeholder-fill-strong);
+}
+
+/* Placeholder connector: a short dashed line down toward the lever track. */
+.orchestrator__pipe-placeholder {
+  width: var(--rare-space-0);
+  height: var(--rare-space-8);
+  border-inline-start: var(--rare-border-width-focus) dashed var(--viz-placeholder-fill-strong);
+}

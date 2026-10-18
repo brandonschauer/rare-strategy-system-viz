@@ -1,0 +1,12 @@
+*.eps
+assets/src/logo/
+node_modules/
+.DS_Store
+.claude/
+
+# Internal source material: kept locally, never published to GitHub Pages
+rare-strategy-2030.md
+concepts/
+
+# Overnote review exports: may hold candid feedback, and the repo is public
+reviews/**/*.json

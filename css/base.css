@@ -1,0 +1,159 @@
+/* Reset, type and layout primitives. Values come only from --rare-* and --viz-* tokens. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: var(--rare-space-0);
+  background: var(--rare-color-background-subtle);
+  color: var(--rare-color-text-default);
+  font-family: var(--rare-font-family-text);
+  font-size: var(--rare-font-size-400);
+  font-weight: var(--rare-font-weight-regular);
+  line-height: var(--rare-line-height-normal);
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+figure {
+  margin: var(--rare-space-0);
+}
+
+ul {
+  padding: var(--rare-space-0);
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--rare-color-action-primary);
+}
+
+a:hover {
+  color: var(--rare-color-action-primary-hover);
+}
+
+:focus-visible {
+  outline: var(--rare-border-width-focus) solid var(--rare-color-focus-ring);
+  outline-offset: var(--rare-border-offset-focus);
+}
+
+/* Programmatic focus targets (e.g. #lever-detail after a Levers menu choice) need no ring. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: var(--rare-border-width-default);
+  height: var(--rare-border-width-default);
+  margin: calc(-1 * var(--rare-border-width-default));
+  padding: var(--rare-space-0);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--rare-space-2);
+  left: var(--rare-space-2);
+  z-index: var(--rare-elevation-z-modal);
+  padding: var(--rare-space-2) var(--rare-space-4);
+  border-radius: var(--rare-radius-md);
+  background: var(--rare-color-action-primary);
+  color: var(--rare-color-text-on-brand);
+  font-weight: var(--rare-font-weight-semibold);
+  transform: translateY(calc(-100% - var(--rare-space-4)));
+}
+
+.skip-link:focus {
+  transform: none;
+  color: var(--rare-color-text-on-brand);
+}
+
+/* Clips sideways travel (the card flip leaves the frame) without creating a scroll container,
+   so position: sticky keeps working (§4.3 "No scrollbars"). */
+.page {
+  overflow-x: clip;
+}
+
+.panel {
+  padding-block: var(--viz-panel-pad-block);
+}
+
+.panel__inner {
+  max-width: var(--viz-content-max);
+  margin-inline: auto;
+  padding-inline: var(--viz-gutter);
+}
+
+/* Desktop: reserve the right gutter for the orchestrator figure (§3, §5). */
+@media (min-width: 1024px) {
+  .orchestration .panel__inner {
+    padding-inline-end: calc(var(--viz-gutter) + var(--viz-orchestrator-gutter));
+  }
+}
+
+.eyebrow {
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-500);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
+}
+
+/* ---- Skeleton placeholder shapes (§4.8): static, muted, no shimmer -------------------- */
+
+.ph {
+  display: block;
+  border-radius: var(--rare-radius-sm);
+  background: var(--viz-placeholder-fill-strong);
+}
+
+.ph--bar {
+  height: var(--viz-placeholder-bar);
+}
+
+.ph--bar-lg {
+  height: var(--viz-placeholder-bar-lg);
+}
+
+.ph--pill {
+  height: var(--rare-size-control-sm);
+  border-radius: var(--rare-radius-pill);
+}
+
+.ph--w-20 { width: 20%; }
+.ph--w-30 { width: 30%; }
+.ph--w-40 { width: 40%; }
+.ph--w-60 { width: 60%; }
+.ph--w-75 { width: 75%; }
+.ph--w-90 { width: 90%; }
+.ph--w-100 { width: 100%; }
+
+.ph-stack {
+  display: grid;
+  gap: var(--rare-space-3);
+}
