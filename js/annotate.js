@@ -40,7 +40,7 @@ function saveReviewer(name) {
 const overnote = new Overnote({
   author: readReviewer() || FALLBACK_AUTHOR,
   storageKey: `overnote:${location.pathname}`, // one key per moment page; lever state is a query param
-  ignore: '#global-nav, .site-header__logo-tab, .stack-controls, .lever-scroll-btn, .review-tools',
+  ignore: '#global-nav, .site-header__logo-tab, .lever-dialog, .stack-controls, .lever-scroll-btn, .review-tools',
   position: 'bottom-right',
 });
 

@@ -1,6 +1,6 @@
 # Rare Strategy System Viz — Requirements
 
-**Status:** Draft v0.3 · 2026-10-17 (v0.2: aligned to the Rare Design System; v0.3: moment statement and visualization merged into Panel 1, and panels renumbered 1–3; v0.4: Next-only physical card flip, lever pages planned, Q2/Q4/Q6 resolved; v0.5: all open questions resolved, colour plan drawn from Rare tokens rather than LEGO colours; v0.6: Stage 1 review: rare.org-style non-sticky header with site title, revised description, no scene counter, no "in development" label, stronger selected-lever indicator)
+**Status:** Draft v0.3 · 2026-10-17 (v0.2: aligned to the Rare Design System; v0.3: moment statement and visualization merged into Panel 1, and panels renumbered 1–3; v0.4: Next-only physical card flip, lever pages planned, Q2/Q4/Q6 resolved; v0.5: all open questions resolved, colour plan drawn from Rare tokens rather than LEGO colours; v0.6: Stage 1 review: rare.org-style non-sticky header with site title, revised description, no scene counter, no "in development" label, stronger selected-lever indicator; v0.7: Levers menu opens an explanatory dialog instead of selecting a lever)
 **Source context:** [`rare-strategy-2030.md`](../rare-strategy-2030.md) · [Overnote requirement](../../overnote/docs/OVERNOTE_REQUIREMENT.md) · LEGO mockups in [`concepts/`](../concepts/) · Rare Design System (`../rare-design-system-main/`) · Core tokens (`../speak-sustainability/design-tokens/build/rare-core.css`)
 
 ---
@@ -84,7 +84,7 @@ Long term, each lever gets its own page that brings together what that lever mus
 2. **Moment by moment:** each of the 7 moments in order, with its significance for that moment (Primary / Strong / Supporting), a short statement of what the moment requires of the lever, and a link to that moment page with `?lever=<slug>`.
 
 Implications for this phase:
-- **Levers dropdown:** for now it still selects the lever on the current page (§4.1). When lever pages exist, it will navigate to `/levers/<slug>/` instead. Keep the menu's item markup as links so the change is just a different `href`.
+- **Levers dropdown:** for now it opens a dialog describing the planned lever page (§4.1). When lever pages exist, it will navigate to `/levers/<slug>/` instead. Keep the menu's item markup as links so the change is just a different `href`.
 - **Content readiness:** each moment page already authors a per-lever card description and Panel 3 detail. To make lever pages easy to assemble later without copying text by hand, `site-data.js` records each moment's lever significance, and the per-lever card descriptions are kept short and self-contained enough to be reused on a lever page.
 
 ---
@@ -148,7 +148,10 @@ Panel 1 combines the moment's statement and its visualization. The two do the sa
   - **No separate nav bar.** There is no nav background and no bottom rule. The title and menus sit directly on Panel 1's background (`background-subtle`), so the nav reads as the top of Panel 1.
   - **Not sticky.** The whole header scrolls out of view with the page. (rare.org itself switches to a compact sticky header on scroll; this page deliberately doesn't.)
 - **Moments dropdown:** lists all 7 moments in §2.1 order and shows the current moment as selected. Choosing one navigates to that moment's URL. Skeleton moments are marked "(in development)" in the menu.
-- **Levers dropdown:** lists the 4 levers. **In this phase**, choosing one selects that lever on the current page (Panel 2 and Panel 3 update), scrolls to Panel 3, and updates `?lever=`. On a skeleton page it does the same but the panels stay empty. **Later**, it will navigate to that lever's page (§2.4).
+- **Levers dropdown:** lists the 4 levers. It never shows a lever as selected, because it isn't tied to the page's lever selection (that lives in Panel 2).
+  - **In this phase**, choosing a lever opens a simple modal dialog over the page. Its heading is the lever's name, and its text reads: *"Selecting a lever would present a page with a summary of the lever capabilities along with a consolidated list of the required capabilities associated with each moment."* An **OK** button closes it, as do Esc and a click on the dimmed backdrop. Focus moves to OK when it opens and returns to the Levers button (or Explore on mobile) when it closes. Choosing a lever changes nothing on the page: not Panel 2, not Panel 3, not `?lever=`.
+  - Build it as a native `<dialog>` opened with `showModal()`, so it traps focus and sits in the top layer above the page. Keep it in Overnote's `ignore` list so OK stays clickable in Sticky mode. The dimmed backdrop is the product token `--viz-scrim` (logged in `TOKEN_GAPS.md`).
+  - **Later**, choosing a lever navigates to that lever's page (§2.4) and the dialog is removed.
 - Both menus are real disclosure menus: a `<button aria-expanded>` that opens a list of links or options. Keyboard: Enter/Space opens; arrow keys move; Esc closes and returns focus. They close on outside click.
 - **Mobile:** the logo tab stays (at the 44px logo height). The site title moves below the logo row, or shortens to fit, and the two menus collapse into a single "Explore" button that opens both in a sheet. Nothing is sticky.
 - Menu contents come from one shared data module (`js/site-data.js`) so all 7 pages stay in sync.
@@ -516,7 +519,7 @@ Follow [`OVERNOTE_REQUIREMENT.md`](../../overnote/docs/OVERNOTE_REQUIREMENT.md) 
 
 | Stage | Goal | Done when |
 | --- | --- | --- |
-| **1. Frame** | Repo scaffold, tokens, global nav, all panels as layout regions, 7 pages (skeleton everywhere), Overnote wired up, GitHub Pages live | All 7 URLs load. The nav switches moments and the lever menu updates `?lever=`. Layout is correct at all breakpoints. Overnote checklist §6 passes. |
+| **1. Frame** | Repo scaffold, tokens, global nav, all panels as layout regions, 7 pages (skeleton everywhere), Overnote wired up, GitHub Pages live | All 7 URLs load. The nav switches moments and the Levers menu opens its dialog. Layout is correct at all breakpoints. Overnote checklist §6 passes. |
 | **2. Components & interactivity** | Card stack with flip, lever tabs with scroll, hover and selected states, default selection, Panel 3 switching, orchestrator figure placeholder and live pipe, URL state, reduced motion, keyboard and ARIA | All interactions work with placeholder content on every page. Pipe tracks the selected lever through resize and scroll. Accessibility checks pass. |
 | **3. Content & art** | 1 Millionth Farmer copy (§4), card illustrations with off-edge layers, Panel 3 graphics, orchestrator art, footer copy | The full page matches this spec. It meets the WSG budget in §7 (≤ 500 KB first view). Lighthouse: Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95. SEO is exempt because the page is deliberately `noindex`. Carbon ≤ 0.19 g CO₂e per view. Copy is SME-reviewed. |
 
@@ -546,7 +549,7 @@ Follow [`OVERNOTE_REQUIREMENT.md`](../../overnote/docs/OVERNOTE_REQUIREMENT.md) 
 | # | Question | Default if unanswered |
 | --- | --- | --- |
 | Q1 | ~~Horizontal lockup for the nav?~~ | **Resolved:** there is no acceptable horizontal lockup, so avoid it. Use the stacked lockup at 56px / 44px (§6.4). If Rare later supplies an SVG of the stacked lockup, swap it in. |
-| Q2 | ~~What should the Levers dropdown do long-term?~~ | **Resolved:** navigate to lever pages that summarise the lever and list what each moment requires of it (§2.4). For now it selects the lever on the current page. |
+| Q2 | ~~What should the Levers dropdown do long-term?~~ | **Resolved:** navigate to lever pages that summarise the lever and list what each moment requires of it (§2.4). For now it opens a dialog describing that page (§4.1). |
 | Q3 | ~~Token gaps?~~ | **Resolved:** the colour gaps are gone, because the colour plan (§6.4) uses only existing tokens and doesn't follow the LEGO colours. The one remaining gap, a slower motion duration, stays product-scope (`--viz-motion-*`) and is logged in `TOKEN_GAPS.md` in case Core wants it later. |
 | Q4 | ~~Illustration sourcing?~~ | **Resolved:** generated and specified by Brandon, from a mix of stock and AI re-rendered photos in a Rare-branded style. Claude Code writes the specs and placeholders (§7). |
 | Q5 | ~~Affinity badge?~~ | **Resolved:** yes. A subtle badge on the related card; it never reorders the stack (§4.4). |

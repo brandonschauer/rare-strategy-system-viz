@@ -6,14 +6,14 @@
  * - Mobile (< 640px): one "Explore" button opens a sheet holding both menus, expanded.
  * - Keyboard: Enter/Space opens (focus moves into the list), arrows/Home/End move,
  *   Esc closes and returns focus. Outside click or tabbing away closes.
- * - Levers menu (this phase): asks the page to select the lever via `viz:leverrequest`
- *   (levers.js updates ?lever= with history.replaceState), then scrolls to #lever-detail.
- *   Items stay real links so a later phase only changes their href to /levers/<slug>/.
+ * - Levers menu (this phase): never marks a lever as selected. Choosing one opens a modal
+ *   dialog explaining that it will lead to a lever summary page (§2.4); the page's own lever
+ *   selection is untouched. Items stay real links so a later phase only changes their href
+ *   to /levers/<slug>/ and drops the dialog.
  */
 import { LEVERS, MOMENTS, momentHref } from './site-data.js';
 
 const MOBILE = window.matchMedia('(max-width: 639px)');
-const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const CHEVRON =
   '<svg class="nav-menu__chevron" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -197,30 +197,36 @@ export function initNav() {
     menus.forEach((m) => setMenu(m, false));
   });
 
-  // Levers menu: select on this page, then scroll to Panel 3.
+  // Levers menu: explain the planned lever pages in a dialog instead of selecting anything.
+  const dialog = buildLeverDialog();
+  let returnFocus = null;
   levers.list.addEventListener('click', (event) => {
     const link = event.target.closest('[data-lever]');
     if (!link) return;
     event.preventDefault();
-    const slug = link.dataset.lever;
-    document.dispatchEvent(new CustomEvent('viz:leverrequest', { detail: { slug, source: 'nav' } }));
+    returnFocus = MOBILE.matches ? explore : levers.button;
     closeAll();
-    const detail = document.getElementById('lever-detail');
-    if (detail) {
-      detail.focus({ preventScroll: true });
-      detail.scrollIntoView({ behavior: REDUCED_MOTION.matches ? 'auto' : 'smooth', block: 'start' });
-    }
+    dialog.querySelector('.lever-dialog__title').textContent = link.querySelector('.nav-menu__label').textContent;
+    dialog.showModal();
   });
+  dialog.addEventListener('close', () => returnFocus?.focus());
+}
 
-  // Reflect the selected lever in the menu.
-  document.addEventListener('viz:statechange', (event) => {
-    const slug = event.detail?.lever;
-    if (!slug) return;
-    for (const link of items(levers)) {
-      if (link.dataset.lever === slug) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-    }
+/** A native modal <dialog>: focus is trapped, Esc closes, and it sits in the top layer. */
+function buildLeverDialog() {
+  const dialog = el('dialog', { class: 'lever-dialog', 'aria-labelledby': 'lever-dialog-title' });
+  dialog.innerHTML = `
+    <form method="dialog" class="lever-dialog__body">
+      <h2 id="lever-dialog-title" class="lever-dialog__title"></h2>
+      <p>Selecting a lever would present a page with a summary of the lever capabilities along with a consolidated list of the required capabilities associated with each moment.</p>
+      <button class="lever-dialog__close" type="submit" autofocus>OK</button>
+    </form>`;
+  // A click on the backdrop (outside the body) closes it too.
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
   });
+  document.body.append(dialog);
+  return dialog;
 }
 
 initNav();

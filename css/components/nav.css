@@ -226,3 +226,51 @@
     padding-inline: var(--rare-space-0);
   }
 }
+
+/* ---- Levers menu dialog (native <dialog>, so it sits in the top layer) ----------------- */
+
+.lever-dialog {
+  width: min(var(--viz-dialog-width), calc(100vw - 2 * var(--viz-gutter)));
+  padding: var(--rare-space-0);
+  border: var(--rare-border-width-default) solid var(--rare-color-border-default);
+  border-radius: var(--rare-radius-card);
+  background: var(--rare-color-background-default);
+  color: var(--rare-color-text-default);
+  box-shadow: var(--viz-shadow-lifted);
+}
+
+.lever-dialog::backdrop {
+  background: var(--viz-scrim);
+}
+
+.lever-dialog__body {
+  display: grid;
+  gap: var(--rare-space-4);
+  padding: var(--rare-space-6);
+  line-height: var(--rare-line-height-relaxed);
+}
+
+.lever-dialog__title {
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-600);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
+}
+
+.lever-dialog__close {
+  justify-self: end;
+  min-width: calc(var(--rare-size-control-md) * 2);
+  min-height: var(--rare-size-control-md);
+  padding: var(--rare-space-0) var(--rare-space-5);
+  border: 0;
+  border-radius: var(--rare-radius-md);
+  background: var(--rare-color-action-primary);
+  color: var(--rare-color-text-on-brand);
+  font-weight: var(--rare-font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--rare-motion-duration-fast) var(--rare-motion-easing-standard);
+}
+
+.lever-dialog__close:hover {
+  background: var(--rare-color-action-primary-hover);
+}

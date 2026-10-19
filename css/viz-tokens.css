@@ -41,6 +41,10 @@
   --viz-logo-tab-shadow: var(--viz-shadow-soft);
   /* PRODUCT-SCOPE: disclosure menu panel width. */
   --viz-nav-menu-width: calc(var(--rare-space-11) * 5);
+  /* PRODUCT-SCOPE: Levers menu dialog width and the dimmed page behind it (Core has no scrim
+     colour; composed from ink, see TOKEN_GAPS.md). */
+  --viz-dialog-width: calc(var(--rare-space-11) * 7);
+  --viz-scrim: color-mix(in srgb, var(--rare-color-ink) 40%, transparent);
 
   /* ---- Panel 1: card stack ------------------------------------------------------------ */
 

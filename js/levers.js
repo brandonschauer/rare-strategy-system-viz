@@ -7,7 +7,7 @@
  * WAI-ARIA Tabs pattern, scroll track and hover/selected styling on top of this.
  *
  * Text is never re-rendered: panels are only shown or hidden, so Overnote anchors survive.
- * Every change dispatches `viz:statechange` with { lever } for annotate.js and the nav.
+ * Every change dispatches `viz:statechange` with { lever } for annotate.js.
  */
 import { defaultLeverFor, getLever } from './site-data.js';
 
@@ -37,7 +37,6 @@ export function selectLever(slug, { updateUrl = true } = {}) {
   document.dispatchEvent(new CustomEvent('viz:statechange', { detail: { lever: slug, source: 'levers' } }));
 }
 
-document.addEventListener('viz:leverrequest', (event) => selectLever(event.detail.slug));
 
 // An invalid or missing ?lever= falls back to the default without rewriting the URL.
 selectLever(readUrlLever() ?? defaultLeverFor(moment), { updateUrl: false });
