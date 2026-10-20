@@ -1,15 +1,44 @@
-/* Panel 3: Lever requirements (§4.6). All four detail panels are in the HTML; inactive
-   ones carry `hidden`. Graphic stacks above text on mobile; two columns from 800px. */
+/* Panel 3: Lever requirements (§4.6). All four detail panels are in the HTML as tabpanels;
+   inactive ones carry `hidden`. They share one grid cell so a change can cross-fade (about
+   200ms, instant under reduced motion). Graphic above text on mobile; two columns from 800px.
+   The 4px top rule meets the selected lever's stem, and a caret on the rule points down into
+   the panel at the selected card's centre (--lever-caret-x, set by js/levers.js). */
 
 .panel--detail {
+  position: relative;
   background: var(--rare-color-background-default);
   border-top: var(--viz-detail-rule) solid var(--rare-color-action-primary);
   scroll-margin-top: var(--viz-scroll-offset);
 }
 
+.panel--detail::before {
+  content: "";
+  position: absolute;
+  top: var(--rare-space-0);
+  left: var(--lever-caret-x, 50%);
+  border-inline: var(--viz-lever-caret) solid transparent;
+  border-top: var(--viz-lever-caret) solid var(--rare-color-action-primary);
+  transform: translateX(-50%);
+}
+
+.panel--detail[data-caret-hidden]::before {
+  display: none;
+}
+
+.lever-detail__heading {
+  margin-block-end: var(--rare-space-6);
+  color: var(--rare-color-cyan-700);
+}
+
+.lever-detail-panels {
+  display: grid;
+}
+
 .lever-detail-panel {
+  grid-area: 1 / 1;
   display: grid;
   gap: var(--rare-space-7);
+  align-content: start;
 }
 
 .lever-detail-panel[hidden] {
@@ -23,25 +52,95 @@
   }
 }
 
+/* ---- Graphic box (placeholder for the Stage 3 inline SVG) -------------------------------- */
+
 .lever-detail__graphic {
+  display: grid;
+  gap: var(--rare-space-3);
+}
+
+.lever-detail__graphic-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rare-space-2);
   aspect-ratio: 4 / 3;
+  padding: var(--rare-space-6);
   border: var(--rare-border-width-default) solid var(--viz-placeholder-line);
   border-radius: var(--rare-radius-card);
-  background: var(--viz-placeholder-fill);
+  background: var(--rare-color-background-subtle);
 }
+
+.lever-detail__node {
+  flex: 0 0 22%;
+  aspect-ratio: 1;
+  border-radius: var(--rare-radius-lg);
+}
+
+.lever-detail__flow {
+  flex: 1 1 auto;
+  height: var(--rare-border-width-focus);
+  border-radius: var(--rare-radius-pill);
+  background: var(--rare-color-action-primary);
+}
+
+.lever-detail__caption {
+  color: var(--rare-color-text-muted);
+  font-size: var(--rare-font-size-200);
+}
+
+/* ---- Text --------------------------------------------------------------------------------- */
 
 .lever-detail__text {
   display: grid;
   gap: var(--rare-space-3);
 }
 
+/* Repeats the selected lever's name, so Panel 3 says which card it belongs to. */
+.lever-detail__lever {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rare-space-2);
+  color: var(--rare-color-action-primary);
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-500);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
+}
+
+.lever-detail__lever::before {
+  content: "";
+  width: var(--rare-space-3);
+  height: var(--rare-space-3);
+  border-radius: var(--rare-radius-sm);
+  background: var(--rare-color-action-primary);
+}
+
+.lever-detail__subtitle {
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-700);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
+}
+
+.lever-detail__chips-label {
+  margin-block-start: var(--rare-space-4);
+  color: var(--rare-color-text-muted);
+  font-size: var(--rare-font-size-300);
+  font-weight: var(--rare-font-weight-semibold);
+}
+
 .lever-detail__chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--rare-space-2);
-  margin-block-start: var(--rare-space-4);
 }
 
-.lever-detail__chips .ph--pill {
-  width: calc(var(--rare-space-11) * 2);
+.chip {
+  padding: var(--rare-space-1) var(--rare-space-3);
+  border-radius: var(--rare-radius-pill);
+  background: var(--rare-color-blue-50);
+  color: var(--rare-color-action-primary);
+  font-size: var(--rare-font-size-200);
+  font-weight: var(--rare-font-weight-semibold);
 }

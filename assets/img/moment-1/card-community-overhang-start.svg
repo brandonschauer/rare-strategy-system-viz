@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="160" viewBox="0 0 192 160">
+<!-- PLACEHOLDER card-community-overhang-start.svg: overhang, breaks the left and top edges. Replace with the final art at the same canvas. -->
+<!-- cyan-500 / cyan-500 -->
+<ellipse cx="72" cy="56" rx="64" ry="28" transform="rotate(-24 72 56)" fill="#00afd8"/>
+<ellipse cx="120" cy="96" rx="64" ry="24" transform="rotate(18 120 96)" fill="#00afd8"/>
+<ellipse cx="56" cy="116" rx="48" ry="20" transform="rotate(-8 56 116)" fill="#08627a" fill-opacity="0.7"/>
+</svg>

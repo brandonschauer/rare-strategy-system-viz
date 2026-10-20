@@ -1,7 +1,12 @@
-/* Panel 2: Levers (§4.5). Stage 1: four card outlines in a horizontal track.
-   Hover, tabs, scroll buttons and edge fades arrive in Stage 2. */
+/* Panel 2: Levers (§4.5). WAI-ARIA tabs in a horizontal scroll-snap track, with edge fades and
+   scroll buttons that appear only when the track overflows (js/levers.js sets data-overflow-*).
+   Resting, hover, focus and selected states are distinct. The selected card's indicator is
+   deliberately strong (Stage 1 review): a solid accent card, a stem that drops from it to
+   Panel 3's top rule, and a caret on that rule pointing into Panel 3 (lever-detail.css). */
 
+/* No bottom padding: the track runs to Panel 3's top rule so the stem can meet it. */
 .panel--levers {
+  padding-block-end: var(--rare-space-0);
   background: var(--rare-color-background-muted);
 }
 
@@ -11,20 +16,117 @@
   margin-block-end: var(--rare-space-6);
 }
 
-/* Padding at the block end keeps the selected card's caret inside the scroll box. */
+.levers-heading__eyebrow {
+  color: var(--rare-color-cyan-700);
+}
+
+/* Above the pipe overlay, so the pipe tucks under the selected card's top edge. */
+.lever-track-wrap {
+  position: relative;
+  z-index: var(--rare-elevation-z-sticky);
+}
+
+/* The track's padding keeps the hover lift and focus ring inside the scroll box; the negative
+   margin keeps the cards aligned with the heading. Its block-end padding is the stem's run. */
 .lever-track {
   display: flex;
   gap: var(--viz-lever-gap);
+  margin-inline: calc(-1 * var(--rare-space-2));
+  padding: var(--rare-space-2) var(--rare-space-2) var(--viz-lever-stem-length);
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-block: var(--rare-space-1) calc(var(--viz-lever-caret) + var(--rare-space-1));
   overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--rare-space-2);
+  /* Scrolling is by swipe, trackpad, the arrow keys or the scroll buttons; a scrollbar would
+     cut across the stem. */
+  scrollbar-width: none;
 }
+
+.lever-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lever-track {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ---- Edge fades and scroll buttons (only when overflowing) ------------------------------ */
+
+.lever-track-wrap::before,
+.lever-track-wrap::after {
+  content: "";
+  position: absolute;
+  top: var(--rare-space-0);
+  bottom: var(--viz-lever-stem-length);
+  z-index: var(--rare-elevation-z-raised);
+  width: var(--viz-lever-fade);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.lever-track-wrap::before {
+  left: calc(-1 * var(--rare-space-2));
+  background: linear-gradient(to right, var(--rare-color-background-muted), transparent);
+}
+
+.lever-track-wrap::after {
+  right: calc(-1 * var(--rare-space-2));
+  background: linear-gradient(to left, var(--rare-color-background-muted), transparent);
+}
+
+.lever-track-wrap[data-overflow-start]::before,
+.lever-track-wrap[data-overflow-end]::after {
+  visibility: visible;
+}
+
+.lever-scroll-btn {
+  position: absolute;
+  top: calc((100% - var(--viz-lever-stem-length)) / 2);
+  z-index: var(--rare-elevation-z-sticky);
+  display: grid;
+  place-items: center;
+  width: var(--rare-size-control-md);
+  height: var(--rare-size-control-md);
+  padding: var(--rare-space-0);
+  border: var(--rare-border-width-default) solid var(--rare-color-border-default);
+  border-radius: var(--rare-radius-pill);
+  background: var(--rare-color-background-default);
+  color: var(--rare-color-action-primary);
+  box-shadow: var(--viz-shadow-soft);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color var(--rare-motion-duration-fast) var(--rare-motion-easing-standard);
+}
+
+.lever-scroll-btn:hover {
+  background: var(--rare-color-blue-50);
+}
+
+.lever-scroll-btn[hidden] {
+  display: none;
+}
+
+.lever-scroll-btn--prev {
+  left: calc(-1 * var(--rare-space-3));
+}
+
+.lever-scroll-btn--next {
+  right: calc(-1 * var(--rare-space-3));
+}
+
+.lever-scroll-btn svg {
+  width: var(--rare-space-5);
+  height: var(--rare-space-5);
+}
+
+/* ---- Lever card (tab) ------------------------------------------------------------------- */
 
 .lever-card {
   position: relative;
   display: grid;
-  align-content: start;
+  grid-template-rows: auto auto 1fr;
   gap: var(--rare-space-3);
   flex: 0 0 var(--viz-lever-card-width);
   min-height: var(--viz-lever-card-min-height);
@@ -33,25 +135,111 @@
   border-radius: var(--rare-radius-card);
   background: var(--rare-color-background-default);
   box-shadow: var(--viz-shadow-soft);
+  cursor: pointer;
   scroll-snap-align: start;
+  transition:
+    transform var(--rare-motion-duration-fast) var(--rare-motion-easing-standard),
+    box-shadow var(--rare-motion-duration-fast) var(--rare-motion-easing-standard),
+    border-color var(--rare-motion-duration-fast) var(--rare-motion-easing-standard);
 }
 
-.lever-card .ph--pill {
-  margin-block-start: auto;
+.lever-card__title {
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-500);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
 }
 
-/* Selected (minimal Stage 1 marker so ?lever= is visible): accent border + caret into Panel 3. */
-.lever-card[data-selected] {
+.lever-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: end;
+  gap: var(--rare-space-2);
+}
+
+/* Hover (pointer only): lifts, stronger shadow, stronger border. */
+@media (hover: hover) {
+  .lever-card:not([aria-selected="true"]):hover {
+    border-color: var(--rare-color-border-strong);
+    box-shadow: var(--viz-shadow-lifted);
+    transform: translateY(var(--viz-lever-lift));
+  }
+}
+
+/* Focus (keyboard): the system focus ring, without the lift, so it never reads as hover. */
+.lever-card:focus-visible {
+  outline: var(--rare-border-width-focus) solid var(--rare-color-focus-ring);
+  outline-offset: var(--rare-border-offset-focus);
+}
+
+/* Selected: blue-50 fill, 2px accent border, the stem down to Panel 3 and a "Shown below" cue. */
+.lever-card[aria-selected="true"] {
   border-color: var(--rare-color-action-primary);
-  box-shadow: inset 0 0 0 var(--rare-border-width-default) var(--rare-color-action-primary), var(--viz-shadow-soft);
+  background: var(--rare-color-blue-50);
+  box-shadow: var(--viz-lever-selected-ring), var(--viz-shadow-soft);
+  cursor: default;
 }
 
-.lever-card[data-selected]::after {
+.lever-card[aria-selected="true"]::after {
   content: "";
   position: absolute;
   top: 100%;
   left: 50%;
-  border-inline: var(--viz-lever-caret) solid transparent;
-  border-top: var(--viz-lever-caret) solid var(--rare-color-action-primary);
+  width: var(--viz-lever-stem);
+  height: calc(var(--viz-lever-stem-length) + var(--rare-border-width-default));
+  background: var(--rare-color-action-primary);
   transform: translateX(-50%);
+}
+
+.lever-card__shown {
+  display: none;
+  align-items: center;
+  gap: var(--rare-space-1);
+  margin-inline-start: auto;
+  color: var(--rare-color-action-primary);
+  font-size: var(--rare-font-size-200);
+  font-weight: var(--rare-font-weight-semibold);
+}
+
+.lever-card__shown::after {
+  content: "↓";
+}
+
+.lever-card[aria-selected="true"] .lever-card__shown {
+  display: inline-flex;
+}
+
+/* ---- Significance tag and pips (§4.5, §6.4) --------------------------------------------- */
+
+.sig-tag {
+  display: inline-block;
+  padding: var(--rare-space-0) var(--rare-space-2);
+  border-radius: var(--rare-radius-pill);
+  background: var(--rare-color-background-muted);
+  color: var(--rare-color-text-muted);
+  font-size: var(--rare-font-size-200);
+  font-weight: var(--rare-font-weight-semibold);
+  line-height: var(--rare-line-height-normal);
+}
+
+.sig-tag--primary {
+  background: var(--rare-color-yellow-100);
+  color: var(--rare-color-text-feature);
+}
+
+.sig-pips {
+  display: inline-flex;
+  gap: var(--rare-space-1);
+}
+
+.sig-pips__pip {
+  width: var(--rare-space-2);
+  height: var(--rare-space-2);
+  border: var(--rare-border-width-default) solid var(--rare-color-border-strong);
+  border-radius: var(--rare-radius-pill);
+}
+
+.sig-pips__pip.is-on {
+  background: var(--rare-color-border-strong);
 }

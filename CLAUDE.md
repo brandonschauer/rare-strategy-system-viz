@@ -4,7 +4,7 @@ Read [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) first. It is the source of tru
 
 ## Conventions
 
-- **No build step, no framework.** Static HTML, CSS and vanilla ES modules. Serve with `python3 -m http.server`. `tools/generate_moments.py` is a dev-time scaffold whose output is committed; it skips any page marked `data-authored="true"`.
+- **No build step, no framework.** Static HTML, CSS and vanilla ES modules. Serve with `python3 -m http.server`. `tools/generate_moments.py` is a dev-time scaffold whose output is committed; it skips any page marked `data-authored="true"`. `tools/placeholder_art.py` writes the placeholder art in `assets/img/moment-1/` at the sizes in `docs/ILLUSTRATION_SPECS.md`.
 - **Relative paths only.** Moment pages sit at `moments/<slug>/`, so assets are `../../css/…`, `../../js/…`. This works locally and under the GitHub Pages prefix.
 - **Stable IDs.** Keep the IDs in REQUIREMENTS §3.1 (`global-nav`, `moment`, `moment-statement`, `moment-visual`, `card-*`, `orchestration`, `orchestrator`, `levers`, `lever-*`, `lever-detail`, `detail-*`, `site-footer`). Overnote sticky notes anchor to them.
 - **Real DOM text.** Reviewable text is HTML, never inside canvas, images or SVG without an HTML equivalent. Don't re-render text from JS after load; toggle `hidden`. Dispatch `CustomEvent('viz:statechange')` after any lever or card change so `annotate.js` calls `overnote.refresh()`.

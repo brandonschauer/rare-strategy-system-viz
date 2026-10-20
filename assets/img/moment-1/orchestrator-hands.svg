@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="208" viewBox="0 0 128 208">
+<!-- PLACEHOLDER orchestrator-hands.svg: orchestrator hands, layered above the pipe. Replace with the final art at the same canvas. -->
+<!-- hands over the pipe, gray-700 -->
+<path d="M28 76 Q22 104 50 108" fill="none" stroke="#5e6a71" stroke-width="10" stroke-linecap="round"/>
+<path d="M100 76 Q106 104 78 108" fill="none" stroke="#5e6a71" stroke-width="10" stroke-linecap="round"/>
+<circle cx="54" cy="108" r="9" fill="#5e6a71"/>
+<circle cx="74" cy="108" r="9" fill="#5e6a71"/>
+</svg>

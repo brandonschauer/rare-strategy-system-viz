@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="384" viewBox="0 0 512 384">
+<!-- PLACEHOLDER card-policy-bg.svg: background, no overflow. Replace with the final art at the same canvas. -->
+<!-- orange-500 / orange-700 -->
+<ellipse cx="400" cy="96" rx="40" ry="40" fill="#f58233" fill-opacity="0.35"/>
+<path d="M0 260 Q128 200 256 248 T512 232 V384 H0 Z" fill="#f58233" fill-opacity="0.3"/>
+<path d="M0 312 Q160 272 320 304 T512 300 V384 H0 Z" fill="#f58233" fill-opacity="0.35"/>
+</svg>

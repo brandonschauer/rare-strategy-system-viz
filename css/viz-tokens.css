@@ -55,13 +55,31 @@
   --viz-stack-inset: 10%;
   /* PRODUCT-SCOPE: how far back cards peek out. Desktop ~8% of card width; mobile 16–24px. */
   --viz-stack-peek: clamp(var(--rare-space-4), 4vw, var(--rare-space-10));
+  /* PRODUCT-SCOPE: back-slot scale (§4.3 "translating and scaling into the slots ahead").
+     Unitless composition ratios; js/card-stack.js reads the resulting transforms, never these. */
+  --viz-stack-scale-1: 0.96;
+  --viz-stack-scale-2: 0.92;
+  /* PRODUCT-SCOPE: pull-out tilt (§4.3: 2–4°) and the extra travel past the point where the
+     pulled card clears the deck, as a fraction of card width (none under reduced motion). */
+  --viz-stack-tilt: 3deg;
+  --viz-stack-overshoot: 0.12;
+  /* PRODUCT-SCOPE: drag distance that counts as a swipe on the front card. */
+  --viz-stack-swipe-min: var(--rare-space-9);
 
   /* ---- Orchestrator ------------------------------------------------------------------- */
 
-  /* PRODUCT-SCOPE: right gutter that holds the figure on desktop, and the figure's size. */
+  /* PRODUCT-SCOPE: right gutter that holds the figure on desktop, and the figure's width.
+     The art canvas is 128 × 208 at 1x (13:8, docs/ILLUSTRATION_SPECS.md); the hands sit at
+     --viz-orchestrator-grip-x/-y of that canvas, where the pipe passes through. */
   --viz-orchestrator-gutter: calc(var(--rare-space-10) * 2);
-  --viz-orchestrator-size: calc(var(--rare-space-10) * 1.5);
-  --viz-orchestrator-size-mobile: var(--rare-space-10);
+  --viz-orchestrator-size: calc(var(--rare-space-10) * 2);
+  --viz-orchestrator-size-mobile: calc(var(--rare-space-10) * 1.25);
+  --viz-orchestrator-ratio: 8 / 13;
+  --viz-orchestrator-grip-x: 50%;
+  --viz-orchestrator-grip-y: 52%;
+  /* PRODUCT-SCOPE: the pipe: a tube in Rare Blue with darker ribs (§6.4, §7). */
+  --viz-pipe-width: var(--rare-space-2);
+  --viz-pipe-rib-dash: var(--rare-border-width-focus) var(--rare-space-1);
 
   /* ---- Panel 2: lever track ----------------------------------------------------------- */
 
@@ -72,8 +90,16 @@
   --viz-lever-card-width-tablet: calc((100% - 2 * var(--viz-lever-gap)) / 2.5);
   --viz-lever-card-width-desktop: calc((100% - 3 * var(--viz-lever-gap)) / 4);
   --viz-lever-card-min-height: calc(var(--rare-space-11) * 2.5);
-  /* PRODUCT-SCOPE: selected-lever caret (half-width of the triangle). */
-  --viz-lever-caret: var(--rare-space-3);
+  /* PRODUCT-SCOPE: selected-lever indicator (§4.5, Stage 1 review: "must be strong"). A stem
+     drops from the card to Panel 3's top rule, and a caret on the rule points into Panel 3. */
+  --viz-lever-caret: var(--rare-space-5);
+  --viz-lever-stem: var(--rare-space-1);
+  --viz-lever-stem-length: var(--rare-space-8);
+  --viz-lever-lift: calc(-1 * var(--rare-space-1));
+  /* PRODUCT-SCOPE: 2px selected border (§6.4) = 1px border + 1px inset ring (no 2px width token). */
+  --viz-lever-selected-ring: inset 0 0 0 var(--rare-border-width-default) var(--rare-color-action-primary);
+  /* PRODUCT-SCOPE: edge fade width over the lever track when it overflows. */
+  --viz-lever-fade: var(--rare-space-9);
   /* PRODUCT-SCOPE: Panel 3 top rule meeting the caret (§6.4: 4px). */
   --viz-detail-rule: var(--rare-space-1);
 
@@ -82,6 +108,10 @@
   /* PRODUCT-SCOPE: composed from Core ink + space. Logged in TOKEN_GAPS.md. */
   --viz-shadow-soft: 0 var(--rare-space-1) var(--rare-space-3) color-mix(in srgb, var(--rare-color-ink) 10%, transparent);
   --viz-shadow-lifted: 0 var(--rare-space-3) var(--rare-space-7) color-mix(in srgb, var(--rare-color-ink) 18%, transparent);
+  /* PRODUCT-SCOPE: the pulled card mid-flip, lifted off the deck (§4.3 "its shadow deepens"). */
+  --viz-shadow-pulled: 0 var(--rare-space-7) var(--rare-space-10) color-mix(in srgb, var(--rare-color-ink) 28%, transparent);
+  /* PRODUCT-SCOPE: back cards sit lower in the deck. */
+  --viz-shadow-resting: 0 var(--rare-space-1) var(--rare-space-4) color-mix(in srgb, var(--rare-color-ink) 8%, transparent);
 
   /* ---- Motion (gap: Core has no duration above 200ms) --------------------------------- */
 
@@ -89,7 +119,10 @@
   --viz-motion-flip-leg: calc(var(--rare-motion-duration-base) * 2.25);         /* 450ms */
   --viz-motion-flip-leg-reduced: calc(var(--rare-motion-duration-base) * 1.5);  /* 300ms */
   --viz-motion-flip-offset: calc(var(--rare-motion-duration-base) * 0.5);       /* 100ms */
+  --viz-motion-flip-offset-reduced: calc(var(--rare-motion-duration-base) * 0.25); /* 50ms */
   --viz-motion-pipe: calc(var(--rare-motion-duration-base) * 2.5);              /* 500ms */
+  /* Panel 3 cross-fade (§4.6 ~250ms): base is close enough, see TOKEN_GAPS.md. */
+  --viz-motion-detail: var(--rare-motion-duration-base);
 
   /* ---- Stacking ----------------------------------------------------------------------- */
 

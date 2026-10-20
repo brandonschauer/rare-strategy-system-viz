@@ -1,59 +1,128 @@
-/* Orchestration zone (§4.4): Panels 1 and 2, the seam between them and the pipe overlay.
-   Stage 1: a static silhouette and a dashed placeholder connector. */
+/* Orchestration zone (§4.4): Panels 1 and 2, the seam between them, the orchestrator figure
+   and the pipe overlay that js/orchestrator.js draws.
+
+   Stacking inside the zone (its own context, all --rare-elevation-z-*):
+     figure art (z-base) < pipe (z-raised) < card stack, lever track, figure hands (z-sticky)
+   so the pipe runs in front of the figure's body, through its hands, and tucks under both the
+   card stack and the selected lever card at its ends. */
 
 .orchestration {
   position: relative;
+  isolation: isolate;
 }
 
-/* The pipe overlay Stage 2 draws into. Decorative and never interactive. */
+/* Decorative and never interactive. */
 .orchestrator-pipe {
   position: absolute;
   inset: var(--rare-space-0);
+  z-index: var(--rare-elevation-z-raised);
   width: 100%;
   height: 100%;
   overflow: visible;
   pointer-events: none;
-  z-index: var(--rare-elevation-z-raised);
 }
 
+.orchestrator-pipe__tube,
+.orchestrator-pipe__ribs,
+.orchestrator-pipe__reveal {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.orchestrator-pipe__tube {
+  stroke: var(--rare-color-action-primary);
+  stroke-width: var(--viz-pipe-width);
+}
+
+/* Ribs: short darker bands across the tube, a nod to the LEGO flex tube (§7). */
+.orchestrator-pipe__ribs {
+  stroke: var(--rare-color-action-primary-hover);
+  stroke-width: var(--viz-pipe-width);
+  stroke-dasharray: var(--viz-pipe-rib-dash);
+  stroke-linecap: butt;
+}
+
+/* Mask stroke that reveals the pipe as it draws (pathLength = 1). */
+.orchestrator-pipe__reveal {
+  stroke: var(--rare-color-white);
+  stroke-width: calc(var(--viz-pipe-width) * 3);
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+
+/* ---- Seam and figure --------------------------------------------------------------------- */
+
+/* Below desktop the figure sits in the flow between Panels 1 and 2, dipping into Panel 2. */
 .orchestration__seam {
   display: flex;
   justify-content: center;
   max-width: var(--viz-content-max);
   margin-inline: auto;
+  margin-block-end: calc(var(--viz-orchestrator-size) * -0.5);
   padding-inline: var(--viz-gutter);
 }
 
+/* No z-index here: the art and hands below join the zone's stacking order separately. */
 .orchestrator {
   position: relative;
-  z-index: var(--rare-elevation-z-sticky);
-  display: grid;
-  justify-items: center;
   width: var(--viz-orchestrator-size);
 }
 
-/* Desktop: the figure sits in the right gutter, straddling the Panel 1 / Panel 2 boundary. */
+.orchestrator__figure {
+  position: relative;
+  aspect-ratio: var(--viz-orchestrator-ratio);
+}
+
+.orchestrator__art,
+.orchestrator__hands {
+  position: absolute;
+  inset: var(--rare-space-0);
+  width: 100%;
+  height: 100%;
+}
+
+.orchestrator__art {
+  z-index: var(--rare-elevation-z-base);
+}
+
+.orchestrator__hands {
+  z-index: var(--rare-elevation-z-sticky);
+}
+
+/* Where the pipe passes through the hands. A point, measured by js/orchestrator.js. */
+.orchestrator__grip {
+  position: absolute;
+  left: var(--viz-orchestrator-grip-x);
+  top: var(--viz-orchestrator-grip-y);
+  width: var(--rare-space-0);
+  height: var(--rare-space-0);
+}
+
+/* Desktop: in the right gutter, centred on the Panel 1 / Panel 2 boundary. Offset with a
+   margin rather than a transform, so the figure creates no stacking context of its own. */
 @media (min-width: 1024px) {
   .orchestration__seam {
     position: relative;
     height: var(--rare-space-0);
+    margin-block-end: var(--rare-space-0);
   }
 
   .orchestrator {
     position: absolute;
     top: var(--rare-space-0);
     right: var(--viz-gutter);
-    width: var(--viz-orchestrator-gutter);
-    transform: translateY(-50%);
+    margin-block-start: calc(var(--viz-orchestrator-size) * -13 / 16);
   }
 }
 
-/* Silhouette placeholder: head + body, neutral and static. */
+/* ---- Skeleton silhouette (§4.8): head, body and a pair of hands, neutral and static -------- */
+
 .orchestrator__silhouette {
   display: grid;
+  align-content: start;
   justify-items: center;
   gap: var(--rare-space-1);
-  width: var(--viz-orchestrator-size);
+  padding-block-start: 6%;
 }
 
 .orchestrator__head {
@@ -65,14 +134,17 @@
 
 .orchestrator__body {
   width: 62%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 5;
   border-radius: var(--rare-radius-xl) var(--rare-radius-xl) var(--rare-radius-md) var(--rare-radius-md);
   background: var(--viz-placeholder-fill-strong);
 }
 
-/* Placeholder connector: a short dashed line down toward the lever track. */
-.orchestrator__pipe-placeholder {
-  width: var(--rare-space-0);
-  height: var(--rare-space-8);
-  border-inline-start: var(--rare-border-width-focus) dashed var(--viz-placeholder-fill-strong);
+.orchestrator__hands--ph {
+  inset: auto;
+  left: calc(var(--viz-orchestrator-grip-x) - 18%);
+  top: calc(var(--viz-orchestrator-grip-y) - 4%);
+  width: 36%;
+  height: 8%;
+  border-radius: var(--rare-radius-pill);
+  background: var(--rare-color-border-strong);
 }

@@ -1,5 +1,5 @@
 /* Panel 1: Moment — statement (§4.2) above the card-stack scenes (§4.3).
-   Stage 1 is the frame only: static card frames, backplates and layer placeholders. */
+   Rest positions live here (data-slot); js/card-stack.js reads them and animates the flip. */
 
 .panel--moment {
   background: var(--rare-color-background-subtle);
@@ -45,103 +45,244 @@
   }
 }
 
-/* The stack box leaves room for the back cards to peek left (community) and up-right (policy). */
+/* The stack box leaves room for the back cards to peek left (community) and up-right (policy).
+   It sits above the pipe overlay so the pipe tucks under the cards, and below the Next button. */
 .card-stack {
   position: relative;
+  z-index: var(--rare-elevation-z-sticky);
   width: 100%;
   max-width: calc(var(--viz-stack-card-width) + 2 * var(--viz-stack-peek));
   padding: var(--viz-stack-peek) var(--viz-stack-peek) var(--rare-space-0);
 }
 
+/* Its own stacking context: the three cards order only against each other. */
 .card-stack__deck {
   position: relative;
+  isolation: isolate;
   aspect-ratio: var(--viz-stack-card-ratio);
 }
 
-/* Card frame: transparent bounds that hold every layer (§4.3). One transform per frame. */
+/* Card frame: transparent bounds that hold every layer (§4.3). One transform per frame, so
+   every layer (including those breaking the backplate edge) moves and tilts as one unit.
+   Back slots scale about the centre and translate to keep their peeking edge in place. */
 .stack-card {
   position: absolute;
   inset: var(--rare-space-0);
-  --card-shift-x: 0%;
-  --card-shift-y: 0%;
-  --card-scale: 1;
-  transform: translate(var(--card-shift-x), var(--card-shift-y)) scale(var(--card-scale));
+  transform-origin: center;
 }
 
 .stack-card[data-slot="0"] {
   z-index: var(--rare-elevation-z-sticky);
+  touch-action: pan-y;
 }
 
 .stack-card[data-slot="1"] {
   z-index: var(--rare-elevation-z-raised);
-  --card-shift-x: calc(-1 * var(--viz-stack-peek));
-  transform-origin: right center;
+  transform:
+    translate(calc(-1 * var(--viz-stack-peek) - (1 - var(--viz-stack-scale-1)) * 50%), 0)
+    scale(var(--viz-stack-scale-1));
 }
 
 .stack-card[data-slot="2"] {
   z-index: var(--rare-elevation-z-base);
-  --card-shift-x: var(--viz-stack-peek);
-  --card-shift-y: calc(-1 * var(--viz-stack-peek));
-  transform-origin: left bottom;
+  transform:
+    translate(
+      calc(var(--viz-stack-peek) + (1 - var(--viz-stack-scale-2)) * 50%),
+      calc(-1 * var(--viz-stack-peek) - (1 - var(--viz-stack-scale-2)) * 50%)
+    )
+    scale(var(--viz-stack-scale-2));
 }
 
-/* Backplate: the smaller opaque rounded rectangle inset inside the frame. */
+/* Back cards are not clickable (they are also inert). */
+.stack-card:not([data-slot="0"]) {
+  pointer-events: none;
+}
+
+/* Backplate: the smaller opaque rounded rectangle inset inside the frame. Each card keeps its
+   own tint wherever it sits in the deck (§6.4); the front card is told apart by elevation. */
 .stack-card__backplate {
   position: absolute;
   inset: var(--viz-stack-inset);
+  overflow: hidden;
   border-radius: var(--rare-radius-xl);
-  background: var(--viz-placeholder-fill);
-  border: var(--rare-border-width-default) solid var(--viz-placeholder-line);
+  background: var(--card-tint);
+  box-shadow: var(--viz-shadow-resting);
+  transition: box-shadow var(--viz-motion-flip-leg) var(--rare-motion-easing-standard);
 }
 
-.stack-card[data-slot="0"] .stack-card__backplate {
+.stack-card[data-front] .stack-card__backplate {
   box-shadow: var(--viz-shadow-lifted);
 }
 
-/* Content-layer slots. Placeholders deliberately overhang the backplate edge but stay inside
-   the frame, standing in for the off-the-edge art that arrives in Stage 3. */
+.stack-card.is-pulled .stack-card__backplate {
+  box-shadow: var(--viz-shadow-pulled);
+}
+
+.stack-card--human-nature {
+  --card-tint: var(--rare-color-lime-100);
+  --card-ink: var(--rare-color-lime-700);
+}
+
+.stack-card--community {
+  --card-tint: var(--rare-color-cyan-100);
+  --card-ink: var(--rare-color-cyan-700);
+}
+
+.stack-card--policy {
+  --card-tint: var(--rare-color-orange-100);
+  --card-ink: var(--rare-color-orange-700);
+}
+
+/* Background scene: fills the backplate exactly and is clipped to its radius. */
+.stack-card__bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Content layers, positioned in the 640 × 480 frame of docs/ILLUSTRATION_SPECS.md (as % so
+   they scale). Each one deliberately breaks a backplate edge but stays inside the frame. */
 .stack-card__layer {
   position: absolute;
-  border-radius: var(--rare-radius-pill);
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Figure: 192 × 320 at (320, 16); breaks the top edge by 32px. */
+.stack-card__layer--figure {
+  left: 50%;
+  top: 3.333%;
+  width: 30%;
+  aspect-ratio: 192 / 320;
+}
+
+/* Overhang start: 192 × 160 at (8, 8); breaks the left edge by 56px and the top by 40px. */
+.stack-card__layer--overhang-start {
+  left: 1.25%;
+  top: 1.667%;
+  width: 30%;
+  aspect-ratio: 192 / 160;
+}
+
+/* Overhang end: 176 × 160 at (456, 304); breaks the right edge by 56px and the bottom by 32px. */
+.stack-card__layer--overhang-end {
+  left: 71.25%;
+  top: 63.333%;
+  width: 27.5%;
+  aspect-ratio: 176 / 160;
+}
+
+/* Skeleton pages: neutral shapes in the same slots (§4.8). */
+span.stack-card__layer {
+  border-radius: var(--rare-radius-xl);
   background: var(--viz-placeholder-fill-strong);
 }
 
-.stack-card__layer--figure {
-  left: 40%;
-  bottom: 22%;
-  width: 18%;
-  height: 52%;
+span.stack-card__layer--figure {
   border-radius: var(--rare-radius-pill) var(--rare-radius-pill) var(--rare-radius-lg) var(--rare-radius-lg);
 }
 
-.stack-card__layer--overhang-start {
-  top: 4%;
-  left: 2%;
-  width: 22%;
-  height: 26%;
-}
-
-.stack-card__layer--overhang-end {
-  right: 3%;
-  bottom: 6%;
-  width: 20%;
-  height: 22%;
-}
-
-/* Label and caption: real HTML text (Stage 3); bars for now. */
+/* Label and caption: real HTML text over the art. */
 .stack-card__text {
   position: absolute;
-  right: calc(var(--viz-stack-inset) + 4%);
   bottom: calc(var(--viz-stack-inset) + 4%);
   left: calc(var(--viz-stack-inset) + 4%);
+  display: grid;
+  gap: var(--rare-space-2);
+  width: 38%;
+  padding: var(--rare-space-3);
+  border-radius: var(--rare-radius-lg);
+  background: var(--rare-color-background-default);
+  color: var(--card-ink);
+}
+
+.stack-card__label {
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-500);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
+}
+
+.stack-card__caption-ph {
+  background: var(--card-tint);
+}
+
+@media (max-width: 639px) {
+  .stack-card__text {
+    width: 46%;
+    padding: var(--rare-space-2);
+  }
+
+  .stack-card__label {
+    font-size: var(--rare-font-size-300);
+  }
+}
+
+/* ---- Lever-to-card affinity badge (§4.4) ----------------------------------------------
+   Sits on the backplate's top-left corner, which stays visible whether the card peeks left
+   (slot 1) or up-right (slot 2). Icon only on back cards; icon + lever name on the front. */
+
+.affinity-badges {
+  position: absolute;
+  top: calc(var(--viz-stack-inset) - var(--rare-space-3));
+  left: calc(var(--viz-stack-inset) - var(--rare-space-3));
+  display: flex;
+}
+
+.affinity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rare-space-1);
+  min-width: var(--rare-size-control-sm);
+  height: var(--rare-size-control-sm);
+  padding-inline: var(--rare-space-2);
+  border-radius: var(--rare-radius-pill);
+  background: var(--rare-color-background-default);
+  box-shadow: var(--viz-shadow-soft);
+  color: var(--rare-color-action-primary);
+  font-size: var(--rare-font-size-200);
+  font-weight: var(--rare-font-weight-semibold);
+  white-space: nowrap;
+}
+
+.affinity-badge[hidden] {
+  display: none;
+}
+
+.affinity-badge__icon {
+  flex: none;
+  width: var(--rare-space-3);
+  height: var(--rare-space-3);
+}
+
+.stack-card:not([data-front]) .affinity-badge {
+  justify-content: center;
+  padding-inline: var(--rare-space-0);
+}
+
+.stack-card:not([data-front]) .affinity-badge__text {
+  display: none;
 }
 
 /* ---- Next control (§4.3) ----------------------------------------------------------------- */
 
+/* Above the cards, so a card thrown toward it slides underneath and it stays clickable. */
 .stack-controls {
+  position: relative;
+  z-index: var(--rare-elevation-z-sticky);
   display: flex;
   align-items: center;
   gap: var(--rare-space-3);
+}
+
+/* Below desktop the button sits under the stack at the right, clear of the pipe's path. */
+@media (max-width: 1023px) {
+  .stack-controls {
+    justify-self: end;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -158,9 +299,15 @@
   padding: var(--rare-space-0);
   border: 0;
   border-radius: var(--rare-radius-pill);
-  background: var(--viz-placeholder-fill-strong);
-  color: var(--rare-color-text-muted);
+  background: var(--rare-color-action-primary);
+  color: var(--rare-color-text-on-brand);
+  box-shadow: var(--viz-shadow-soft);
   cursor: pointer;
+  transition: background-color var(--rare-motion-duration-fast) var(--rare-motion-easing-standard);
+}
+
+.stack-next:hover {
+  background: var(--rare-color-action-primary-hover);
 }
 
 .stack-next svg {

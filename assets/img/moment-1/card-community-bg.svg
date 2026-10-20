@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="384" viewBox="0 0 512 384">
+<!-- PLACEHOLDER card-community-bg.svg: background, no overflow. Replace with the final art at the same canvas. -->
+<!-- cyan-500 / cyan-700 -->
+<ellipse cx="400" cy="96" rx="40" ry="40" fill="#00afd8" fill-opacity="0.35"/>
+<path d="M0 260 Q128 200 256 248 T512 232 V384 H0 Z" fill="#00afd8" fill-opacity="0.3"/>
+<path d="M0 312 Q160 272 320 304 T512 300 V384 H0 Z" fill="#00afd8" fill-opacity="0.35"/>
+</svg>

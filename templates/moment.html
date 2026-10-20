@@ -62,11 +62,7 @@
 
         <div class="orchestration__seam">
           <figure id="orchestrator" class="orchestrator">
-            <div class="orchestrator__silhouette" aria-hidden="true">
-              <span class="orchestrator__head"></span>
-              <span class="orchestrator__body"></span>
-            </div>
-            <span class="orchestrator__pipe-placeholder" aria-hidden="true"></span>
+{{ORCHESTRATOR}}
             <figcaption class="visually-hidden">A Rare team member connects the levers to the moment. Rare orchestrates; local partners deliver.</figcaption>
           </figure>
         </div>
@@ -76,12 +72,19 @@
         <section id="levers" class="panel panel--levers" aria-labelledby="levers-title">
           <div class="panel__inner">
             <div class="levers-heading">
-              <h2 id="levers-title" class="visually-hidden">Levers</h2>
-              <span class="ph ph--bar ph--w-20" aria-hidden="true"></span>
+              <h2 id="levers-title" class="eyebrow levers-heading__eyebrow">Levers:<span class="visually-hidden"> heading placeholder</span></h2>
               <span class="ph ph--bar-lg ph--w-60" aria-hidden="true"></span>
             </div>
-            <div class="lever-track">
+            <div class="lever-track-wrap">
+              <button class="lever-scroll-btn lever-scroll-btn--prev" type="button" aria-label="Scroll levers left" tabindex="-1" hidden>
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M13 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="lever-track" role="tablist" aria-labelledby="levers-title">
 {{LEVER_CARDS}}
+              </div>
+              <button class="lever-scroll-btn lever-scroll-btn--next" type="button" aria-label="Scroll levers right" tabindex="-1" hidden>
+                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
             </div>
           </div>
         </section>
@@ -89,8 +92,10 @@
 
       <section id="lever-detail" class="panel panel--detail" aria-labelledby="lever-detail-title" tabindex="-1">
         <div class="panel__inner">
-          <h2 id="lever-detail-title" class="visually-hidden">Lever requirements</h2>
+          <h2 id="lever-detail-title" class="eyebrow lever-detail__heading">Lever requirements</h2>
+          <div class="lever-detail-panels">
 {{DETAIL_PANELS}}
+          </div>
         </div>
       </section>
     </main>
@@ -109,6 +114,7 @@
   <script type="module" src="../../js/nav.js"></script>
   <script type="module" src="../../js/levers.js"></script>
   <script type="module" src="../../js/card-stack.js"></script>
+  <script type="module" src="../../js/orchestrator.js"></script>
   <script type="module" src="../../js/annotate.js"></script>
 </body>
 </html>
