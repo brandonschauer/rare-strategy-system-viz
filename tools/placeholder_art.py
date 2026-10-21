@@ -39,6 +39,31 @@ def c(token):
     return CORE[token]
 
 
+# Overhang-end props per card. Human & Nature: cacao pods and a leaf. Community: a seedling in a
+# pot with foliage. Policy: a clipboard report. Shapes only; the people hold the phones.
+OVERHANG_END = {
+    "human-nature": lambda base, ink, extra: f"""<!-- cacao pods {base} / {ink}, leaf {extra} -->
+<path d="M96 8 Q104 40 88 64" fill="none" stroke="{c(ink)}" stroke-width="6" stroke-linecap="round"/>
+<ellipse cx="128" cy="44" rx="40" ry="18" transform="rotate(-30 128 44)" fill="{c(extra)}"/>
+<ellipse cx="72" cy="104" rx="28" ry="48" transform="rotate(-14 72 104)" fill="{c(base)}"/>
+<ellipse cx="124" cy="112" rx="24" ry="42" transform="rotate(16 124 112)" fill="{c(ink)}"/>""",
+    "community": lambda base, ink, extra: f"""<!-- seedling in a pot {ink} / {base}, foliage {base} -->
+<ellipse cx="136" cy="72" rx="36" ry="16" transform="rotate(-24 136 72)" fill="{c(base)}"/>
+<ellipse cx="40" cy="88" rx="32" ry="14" transform="rotate(20 40 88)" fill="{c(base)}" fill-opacity="0.7"/>
+<path d="M88 112 V56" stroke="{c(ink)}" stroke-width="6" stroke-linecap="round"/>
+<ellipse cx="68" cy="56" rx="22" ry="11" transform="rotate(24 68 56)" fill="{c(base)}"/>
+<ellipse cx="108" cy="44" rx="24" ry="11" transform="rotate(-28 108 44)" fill="{c(base)}"/>
+<path d="M52 108 H124 L112 160 H64 Z" fill="{c(ink)}"/>""",
+    "policy": lambda base, ink, extra: f"""<!-- report {ink} / {base} -->
+<rect x="24" y="16" width="96" height="136" rx="10" fill="{c(ink)}"/>
+<rect x="36" y="36" width="72" height="104" rx="4" fill="{c(base)}"/>
+<rect x="48" y="96" width="12" height="32" fill="{c(ink)}"/>
+<rect x="68" y="76" width="12" height="52" fill="{c(ink)}"/>
+<rect x="88" y="56" width="12" height="72" fill="{c(ink)}"/>
+<circle cx="144" cy="128" r="24" fill="{c(base)}"/>""",
+}
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     for card, (base, ink, extra) in CARDS.items():
@@ -62,13 +87,10 @@ def main():
 <ellipse cx="120" cy="96" rx="64" ry="24" transform="rotate(18 120 96)" fill="{c(extra)}"/>
 <ellipse cx="56" cy="116" rx="48" ry="20" transform="rotate(-8 56 116)" fill="{c(ink)}" fill-opacity="0.7"/>""",
             "overhang, breaks the left and top edges")
-        # Overhang end: 176 x 160, breaks the right edge by 56px and the bottom by 32px.
-        svg(f"card-{card}-overhang-end.svg", 176, 160, f"""<!-- {base} / {ink} -->
-<rect x="24" y="16" width="88" height="128" rx="16" fill="{c(ink)}"/>
-<rect x="36" y="32" width="64" height="80" rx="6" fill="{c(base)}"/>
-<circle cx="140" cy="112" r="28" fill="{c(base)}"/>
-<circle cx="132" cy="56" r="20" fill="{c(extra)}"/>""",
-            "overhang, breaks the right and bottom edges")
+        # Overhang end: 176 x 160, breaks the right edge by 56px and rests on the scene's bottom
+        # line. No phone screens on any card (Stage 2 review): props only.
+        svg(f"card-{card}-overhang-end.svg", 176, 160, OVERHANG_END[card](base, ink, extra),
+            "overhang, breaks the right edge")
 
     # Orchestrator: 128 x 208, hands at (64, 108) = 50% / 52% of the canvas.
     svg("orchestrator.svg", 128, 208, f"""<!-- cap blue-500, shirt green-500 (Rare shirt), trousers gray-700 -->

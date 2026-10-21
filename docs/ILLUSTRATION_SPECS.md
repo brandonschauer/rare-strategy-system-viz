@@ -1,4 +1,4 @@
-# Illustration specs: 1 Millionth Farmer
+# Illustration specs: 1 Millionth Smallholder Farmer
 
 Every art asset the `1-millionth-farmer` page needs (REQUIREMENTS §4.3, §4.4, §7). Each slot already holds a token-coloured placeholder at exactly the size below, so a final file drops in under the same name with no layout change.
 
@@ -10,24 +10,26 @@ Every art asset the `1-millionth-farmer` page needs (REQUIREMENTS §4.3, §4.4, 
 
 ## How a card is built
 
-Each card is a **640 × 480 frame** at 1×. Every number below is in that frame's pixels. The page scales the whole frame, so the art keeps these proportions at any width (the front card renders at up to about 615px wide on desktop and about 330px on a phone).
+The art lives in a **640 × 480 art frame** at 1×, pinned to the top of each card. Every number below is in that frame's pixels. The page scales the whole frame, so the art keeps these proportions at any width (the front card renders at up to about 615px wide on desktop and about 300px on a 360px phone).
 
 ```
- frame 640 × 480 (transparent; nothing may cross it)
+ art frame 640 × 480 (transparent; nothing may cross it)
  ┌────────────────────────────────────────────────────────┐
  │  64px                                            64px  │ 48px
- │    ┌──────────────── backplate 512 × 384 ────────────┐ │
- │    │ at (64, 48), radius 24, the card's 100 tint      │ │
- │    │                                                  │ │
- │    └──────────────────────────────────────────────────┘ │ 48px
- └────────────────────────────────────────────────────────┘
+ │    ┌──────────── scene 512 × 384 ────────────────────┐ │
+ │    │ at (64, 48): top of the backplate, radius 24,    │ │
+ │    │ the card's 100 tint                              │ │
+ │    ├──────────────────────────────────────────────────┤ │ ← y 432, the scene's bottom line
+ └────┤ caption band (HTML label + 10–25 word caption)   ├─┘
+      │ grows with its text; no art here                 │
+      └──────────────────────────────────────────────────┘
 ```
 
-- The **inset band** around the backplate (64px left and right, 48px top and bottom) is the only room a layer has to break the edge. A layer may overhang into it but **never past the frame**.
-- **Layer order**, back to front: background → figure → overhang start → overhang end → label box and badge (HTML, drawn by the page).
-- **Keep clear:**
-  - **Label box** (HTML text on white): bottom-left of the backplate, about x 90–335, y 330–415. Nothing important there; the background may run underneath.
-  - **Affinity badge:** a small pill on the backplate's top-left corner, about x 52–300, y 36–64 on the front card (an icon-only circle on back cards). It may sit over the overhang-start foliage; keep faces and phone screens out of it.
+- The **backplate** is the scene plus a **caption band** below it (REQUIREMENTS §4.3, Stage 2 review). The band holds the card label and a 10–25 word caption as real HTML text, and grows with the text, so the backplate is taller than the scene. **No art goes in the caption band**, and no text goes over the art, so captions never cover faces.
+- The **inset band** around the scene (64px left and right, 48px on top) is the only room a layer has to break the edge. A layer may overhang into it but **never past the art frame**, and never below the scene's bottom line at y 432.
+- **Layer order**, back to front: background → figure → overhang start → overhang end.
+- **No lever markers on the cards** (no badges or pills; REQUIREMENTS §4.4), so the scene has no corner to keep clear.
+- **No phone screens.** People hold their phones, but the screens face them, not the viewer, and no layer shows a screen (Stage 2 review).
 - **Back cards** show only a strip: Community peeks out on the **left**, Policy **above and to the right**. The overhang-start and figure layers are what read on those strips, so give them strong silhouettes.
 
 ## Accent ramps (§6.4, §7)
@@ -47,7 +49,7 @@ Flat colour from the card's own family only, plus skin and hair tones as needed.
 
 ## Card 1: Human & Nature (`card-human-nature`)
 
-Depicts a smallholder farmer using a smartphone in their cacao field. Cacao pods, shade-tree leaves and the phone screen break the frame.
+Depicts a smallholder farmer using a smartphone in their cacao field. Cacao pods and shade-tree leaves break the frame; the phone stays in the farmer's hands with its screen turned toward them.
 
 ### `card-human-nature-bg.svg`
 
@@ -61,7 +63,7 @@ Depicts a smallholder farmer using a smartphone in their cacao field. Cacao pods
 | Accent ramp | `lime-500`, `green-500`, a little `lime-700` |
 | Alt text | none (decorative, `alt=""`) |
 
-> **Brief:** Flat illustrated background of a shaded cacao agroforestry plot in a tropical region: rolling ground in soft lime and green bands, a few slim shade-tree trunks and a soft canopy line near the top, distant hills. Calm, low detail, no people, no text. Leave the lower-left quarter quiet (a label sits there). Transparent PNG/SVG, 1024 × 768.
+> **Brief:** Flat illustrated background of a shaded cacao agroforestry plot in a tropical region: rolling ground in soft lime and green bands, a few slim shade-tree trunks and a soft canopy line near the top, distant hills. Calm, low detail, no people, no text. Transparent PNG/SVG, 1024 × 768.
 
 ### `card-human-nature-figure.svg`
 
@@ -73,9 +75,9 @@ Depicts a smallholder farmer using a smartphone in their cacao field. Cacao pods
 | 1× / 2× | **192 × 320** / **384 × 640** |
 | Background | Transparent |
 | Accent ramp | `lime-700` clothing, `lime-500` accents, natural skin tones |
-| Alt text | "A smallholder cacao farmer in their field checks tailored advice on a smartphone." |
+| Alt text | "A smallholder cacao farmer in their field reads tailored advice on a smartphone." |
 
-> **Brief:** Full-length flat illustration of a smallholder cacao farmer (any gender, from a tropical cacao-growing region) standing in their field, looking at a smartphone held at chest height, confident and engaged. Work clothes and a sun hat in lime-700 and lime-500. Facing slightly left, toward the centre of the card. The head and hat sit in the top 64px of the canvas so they rise above the card edge. No text, no logos. Transparent, 384 × 640.
+> **Brief:** Full-length flat illustration of a smallholder cacao farmer (any gender, from a tropical cacao-growing region) standing in their field, looking at a smartphone held at chest height, confident and engaged. The screen faces the farmer; we see only the back or edge of the phone. Work clothes and a sun hat in lime-700 and lime-500. Facing slightly left, toward the centre of the card. The head and hat sit in the top 64px of the canvas so they rise above the card edge. No text, no logos. Transparent, 384 × 640.
 
 ### `card-human-nature-overhang-start.svg`
 
@@ -95,21 +97,21 @@ Depicts a smallholder farmer using a smartphone in their cacao field. Cacao pods
 
 | | |
 | --- | --- |
-| Layer role | Foreground props that break the bottom-right corner: phone screen with an advice tip, cacao pods |
-| Overflows | **Right edge by 56px**, **bottom edge by 32px** |
-| Placement | (456, 304) in the frame |
+| Layer role | Foreground props that break the right edge: cacao pods on a stem with a leaf |
+| Overflows | **Right edge by 56px**. Rests on the scene's bottom line; never into the caption band. |
+| Placement | (456, 272) in the frame |
 | 1× / 2× | **176 × 160** / **352 × 320** |
 | Background | Transparent |
-| Accent ramp | `lime-700` phone body, `lime-500` screen and pods, `green-500` leaf |
+| Accent ramp | `lime-500` and `lime-700` pods, `green-500` leaf |
 | Alt text | none (decorative; the caption carries the meaning) |
 
-> **Brief:** An oversized smartphone tilted slightly, its screen showing a simple advice card made of shapes only (an icon of a plant and two bars, **no readable text**), next to two or three ripe cacao pods on a short stem with one leaf. Flat lime-700, lime-500 and green-500. Sits in the bottom-right of the canvas. Transparent, 352 × 320.
+> **Brief:** Two or three ripe cacao pods hanging from a short woody stem, with one broad cacao leaf, flat lime-500, lime-700 and green-500. Fills the right half of the canvas and is cut flat along the bottom edge (it sits on the scene's bottom line). No phone, no text. Transparent, 352 × 320.
 
 ---
 
 ## Card 2: Community (`card-community`)
 
-Depicts another farmer and an extension agent (both holding smartphones) and a student.
+Depicts another farmer and an extension agent (both holding smartphones, screens turned toward them) and a student.
 
 ### `card-community-bg.svg`
 
@@ -123,7 +125,7 @@ Depicts another farmer and an extension agent (both holding smartphones) and a s
 | Accent ramp | `cyan-500`, a little `cyan-700` |
 | Alt text | none (decorative) |
 
-> **Brief:** Flat background of a village meeting spot at the edge of farmland: a simple open-sided shelter or a large tree, ground bands and a low horizon in soft cyan tones. No people, no text. Lower-left quarter quiet. Transparent, 1024 × 768.
+> **Brief:** Flat background of a village meeting spot at the edge of farmland: a simple open-sided shelter or a large tree, ground bands and a low horizon in soft cyan tones. No people, no text. Transparent, 1024 × 768.
 
 ### `card-community-figure.svg`
 
@@ -135,9 +137,9 @@ Depicts another farmer and an extension agent (both holding smartphones) and a s
 | 1× / 2× | **192 × 320** / **384 × 640** |
 | Background | Transparent |
 | Accent ramp | `cyan-700`, `cyan-500`, natural skin tones |
-| Alt text | "A farmer and a local extension agent compare advice on their phones while a student looks on." |
+| Alt text | "A farmer and a local extension agent talk over advice on their phones while a student looks on." |
 
-> **Brief:** Three people standing close together, full length, flat style: a farmer and an extension agent (with a partner-organisation lanyard, no logo) each holding a smartphone and comparing screens, and a student beside them looking on. Mixed ages and genders, from a tropical farming community, relaxed and collegial. Clothing in cyan-700 and cyan-500. The tallest head reaches the top 64px of the canvas. A narrow canvas, so overlap the figures. No text. Transparent, 384 × 640.
+> **Brief:** Three people standing close together, full length, flat style: a farmer and an extension agent (with a partner-organisation lanyard, no logo) each holding a smartphone and talking it over (screens face them, not the viewer), and a student beside them looking on. Mixed ages and genders, from a tropical farming community, relaxed and collegial. Clothing in cyan-700 and cyan-500. The tallest head reaches the top 64px of the canvas. A narrow canvas, so overlap the figures. No text. Transparent, 384 × 640.
 
 ### `card-community-overhang-start.svg`
 
@@ -157,15 +159,15 @@ Depicts another farmer and an extension agent (both holding smartphones) and a s
 
 | | |
 | --- | --- |
-| Layer role | Foreground props breaking the bottom-right corner |
-| Overflows | **Right by 56px**, **bottom by 32px** |
-| Placement | (456, 304) |
+| Layer role | Foreground prop that breaks the right edge: a seedling in a pot, with foliage |
+| Overflows | **Right edge by 56px**. Rests on the scene's bottom line; never into the caption band. |
+| Placement | (456, 272) |
 | 1× / 2× | **176 × 160** / **352 × 320** |
 | Background | Transparent |
-| Accent ramp | `cyan-700`, `cyan-500` |
+| Accent ramp | `cyan-700` pot, `cyan-500` leaves |
 | Alt text | none (decorative) |
 
-> **Brief:** A second smartphone held up toward the viewer showing a simple message-group screen made of shapes (speech bubbles, **no readable text**), plus a seedling in a small pot. Flat cyan-700 and cyan-500. Bottom-right of the canvas. Transparent, 352 × 320.
+> **Brief:** A young seedling with a few leaves growing in a simple clay pot, standing on the bottom edge of the canvas, with a sprig of foliage reaching in behind it from the right. Flat cyan-700 pot and cyan-500 leaves. No phone, no screen, no text. Transparent, 352 × 320.
 
 ---
 
@@ -185,7 +187,7 @@ Depicts a mayor and a national government representative with plans, maps and da
 | Accent ramp | `orange-500`, a little `orange-700` |
 | Alt text | none (decorative) |
 
-> **Brief:** Flat background of a municipal office or town-hall steps opening onto the landscape: a simple civic facade or table edge, a window with farmland beyond, in soft orange tones. No people, no flags, no text. Lower-left quarter quiet. Transparent, 1024 × 768.
+> **Brief:** Flat background of a municipal office or town-hall steps opening onto the landscape: a simple civic facade or table edge, a window with farmland beyond, in soft orange tones. No people, no flags, no text. Transparent, 1024 × 768.
 
 ### `card-policy-figure.svg`
 
@@ -219,15 +221,15 @@ Depicts a mayor and a national government representative with plans, maps and da
 
 | | |
 | --- | --- |
-| Layer role | Foreground props breaking the bottom-right corner: a data report |
-| Overflows | **Right by 56px**, **bottom by 32px** |
-| Placement | (456, 304) |
+| Layer role | Foreground props breaking the right edge: a data report |
+| Overflows | **Right by 56px**. Rests on the scene's bottom line; never into the caption band. |
+| Placement | (456, 272) |
 | 1× / 2× | **176 × 160** / **352 × 320** |
 | Background | Transparent |
 | Accent ramp | `orange-700`, `orange-500` |
 | Alt text | none (decorative) |
 
-> **Brief:** A clipboard or printed report with a simple bar chart and a map pin (shapes only, **no readable text or numbers**), and a stamp or seal shape beside it. Flat orange-700 and orange-500. Bottom-right of the canvas. Transparent, 352 × 320.
+> **Brief:** A clipboard or printed report with a simple bar chart and a map pin (shapes only, **no readable text or numbers**), and a stamp or seal shape beside it. Flat orange-700 and orange-500. Standing on the bottom edge of the canvas. Transparent, 352 × 320.
 
 ---
 
@@ -268,8 +270,8 @@ The canvas is **128 × 208** at 1× (13 : 8). It renders 128px wide on desktop (
 ## Checklist when the finals arrive (Stage 3)
 
 - [ ] Each file matches its canvas exactly (1× or 2× as above) and has a transparent background.
-- [ ] Every overhang stays within its listed edges, and nothing reaches past the 640 × 480 frame.
-- [ ] Faces, phone screens and key props avoid the label box and the badge corner.
+- [ ] Every overhang stays within its listed edges, nothing reaches past the 640 × 480 art frame, and nothing drops below the scene's bottom line (y 432).
+- [ ] No phone screen is visible to the viewer in any layer.
 - [ ] No text, numbers or logos in any art.
 - [ ] Colours stay inside the card's ramp; the orchestrator's grip point is at (64, 108).
 - [ ] Each asset is logged in `assets/CREDITS.md` with its source and licence.

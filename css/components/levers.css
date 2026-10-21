@@ -1,8 +1,8 @@
 /* Panel 2: Levers (§4.5). WAI-ARIA tabs in a horizontal scroll-snap track, with edge fades and
    scroll buttons that appear only when the track overflows (js/levers.js sets data-overflow-*).
    Resting, hover, focus and selected states are distinct. The selected card's indicator is
-   deliberately strong (Stage 1 review): a solid accent card, a stem that drops from it to
-   Panel 3's top rule, and a caret on that rule pointing into Panel 3 (lever-detail.css). */
+   deliberately strong (Stage 1 review): a solid accent card, a pipe-style stem that drops from
+   it to Panel 3's top rule, and a caret on that rule pointing into Panel 3 (lever-detail.css). */
 
 /* No bottom padding: the track runs to Panel 3's top rule so the stem can meet it. */
 .panel--levers {
@@ -173,7 +173,9 @@
   outline-offset: var(--rare-border-offset-focus);
 }
 
-/* Selected: blue-50 fill, 2px accent border, the stem down to Panel 3 and a "Shown below" cue. */
+/* Selected: blue-50 fill, 2px accent border, and a stem down to Panel 3 drawn like the
+   orchestrator pipe (same colour, width and ribs; Stage 2 review), so Rare's connections read
+   as one system. */
 .lever-card[aria-selected="true"] {
   border-color: var(--rare-color-action-primary);
   background: var(--rare-color-blue-50);
@@ -186,31 +188,17 @@
   position: absolute;
   top: 100%;
   left: 50%;
-  width: var(--viz-lever-stem);
+  width: var(--viz-pipe-width);
   height: calc(var(--viz-lever-stem-length) + var(--rare-border-width-default));
-  background: var(--rare-color-action-primary);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--rare-color-action-primary-hover) 0 var(--viz-pipe-rib),
+    var(--rare-color-action-primary) var(--viz-pipe-rib) var(--viz-pipe-rib-period)
+  );
   transform: translateX(-50%);
 }
 
-.lever-card__shown {
-  display: none;
-  align-items: center;
-  gap: var(--rare-space-1);
-  margin-inline-start: auto;
-  color: var(--rare-color-action-primary);
-  font-size: var(--rare-font-size-200);
-  font-weight: var(--rare-font-weight-semibold);
-}
-
-.lever-card__shown::after {
-  content: "↓";
-}
-
-.lever-card[aria-selected="true"] .lever-card__shown {
-  display: inline-flex;
-}
-
-/* ---- Significance tag and pips (§4.5, §6.4) --------------------------------------------- */
+/* ---- Significance tag (§4.5, §6.4; no pip meter since the Stage 2 review) --------------------------------------------- */
 
 .sig-tag {
   display: inline-block;
@@ -226,20 +214,4 @@
 .sig-tag--primary {
   background: var(--rare-color-yellow-100);
   color: var(--rare-color-text-feature);
-}
-
-.sig-pips {
-  display: inline-flex;
-  gap: var(--rare-space-1);
-}
-
-.sig-pips__pip {
-  width: var(--rare-space-2);
-  height: var(--rare-space-2);
-  border: var(--rare-border-width-default) solid var(--rare-color-border-strong);
-  border-radius: var(--rare-radius-pill);
-}
-
-.sig-pips__pip.is-on {
-  background: var(--rare-color-border-strong);
 }

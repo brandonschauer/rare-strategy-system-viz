@@ -34,9 +34,11 @@
      Core has no 56px or 44px step; composed from the space ramp (see TOKEN_GAPS.md). */
   --viz-nav-logo-height: calc(var(--rare-space-9) + var(--rare-space-2));
   --viz-nav-logo-height-mobile: calc(var(--rare-space-8) + var(--rare-space-1));
-  /* PRODUCT-SCOPE: logo tab (§4.1): padding around the logo, how far it hangs over Panel 1,
-     and its shadow (Core has no shadow tokens; see TOKEN_GAPS.md). */
-  --viz-logo-tab-pad: var(--rare-space-4);
+  /* PRODUCT-SCOPE: logo tab (§4.1): generous negative space around the logo, like rare.org
+     (Stage 2 review: the logo fills about 40% of the tab's width), how far the tab hangs over
+     Panel 1, and its shadow (Core has no shadow tokens; see TOKEN_GAPS.md). */
+  --viz-logo-tab-pad-inline: var(--rare-space-7);
+  --viz-logo-tab-pad-block: var(--rare-space-6);
   --viz-logo-tab-overhang: var(--rare-space-6);
   --viz-logo-tab-shadow: var(--viz-shadow-soft);
   /* PRODUCT-SCOPE: disclosure menu panel width. */
@@ -51,8 +53,10 @@
   /* PRODUCT-SCOPE: front card width within the stack region. */
   --viz-stack-card-width: min(100%, calc(var(--rare-size-container-narrow) * 0.75));
   --viz-stack-card-ratio: 4 / 3;
-  /* PRODUCT-SCOPE: backplate inset inside the card frame (§4.3: 8–12%). */
-  --viz-stack-inset: 10%;
+  /* PRODUCT-SCOPE: backplate inset inside the card frame (§4.3: 8–12%): 64px of 640 at the
+     sides and 48px above and below. Padding %, so both are fractions of the card's width. */
+  --viz-stack-inset-inline: 10%;
+  --viz-stack-inset-block: 7.5%;
   /* PRODUCT-SCOPE: how far back cards peek out. Desktop ~8% of card width; mobile 16–24px. */
   --viz-stack-peek: clamp(var(--rare-space-4), 4vw, var(--rare-space-10));
   /* PRODUCT-SCOPE: back-slot scale (§4.3 "translating and scaling into the slots ahead").
@@ -79,7 +83,9 @@
   --viz-orchestrator-grip-y: 52%;
   /* PRODUCT-SCOPE: the pipe: a tube in Rare Blue with darker ribs (§6.4, §7). */
   --viz-pipe-width: var(--rare-space-2);
-  --viz-pipe-rib-dash: var(--rare-border-width-focus) var(--rare-space-1);
+  --viz-pipe-rib: var(--rare-border-width-focus);
+  --viz-pipe-rib-period: calc(var(--rare-border-width-focus) + var(--rare-space-1));
+  --viz-pipe-rib-dash: var(--viz-pipe-rib) var(--rare-space-1);
 
   /* ---- Panel 2: lever track ----------------------------------------------------------- */
 
@@ -91,9 +97,9 @@
   --viz-lever-card-width-desktop: calc((100% - 3 * var(--viz-lever-gap)) / 4);
   --viz-lever-card-min-height: calc(var(--rare-space-11) * 2.5);
   /* PRODUCT-SCOPE: selected-lever indicator (§4.5, Stage 1 review: "must be strong"). A stem
-     drops from the card to Panel 3's top rule, and a caret on the rule points into Panel 3. */
+     styled like the pipe drops from the card to Panel 3's top rule, and a caret on the rule
+     points into Panel 3. */
   --viz-lever-caret: var(--rare-space-5);
-  --viz-lever-stem: var(--rare-space-1);
   --viz-lever-stem-length: var(--rare-space-8);
   --viz-lever-lift: calc(-1 * var(--rare-space-1));
   /* PRODUCT-SCOPE: 2px selected border (§6.4) = 1px border + 1px inset ring (no 2px width token). */
@@ -158,6 +164,8 @@
 @media (max-width: 639px) {
   :root {
     --viz-nav-logo-height: var(--viz-nav-logo-height-mobile);
+    --viz-logo-tab-pad-inline: var(--rare-space-5);
+    --viz-logo-tab-pad-block: var(--rare-space-4);
     --viz-orchestrator-size: var(--viz-orchestrator-size-mobile);
   }
 }

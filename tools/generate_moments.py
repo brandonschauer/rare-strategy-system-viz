@@ -32,16 +32,13 @@ CARDS = [
     ("policy", "Policy"),
 ]
 
-# Lever-to-card affinity (REQUIREMENTS §4.4): the card that shows a lever's badge.
-AFFINITY = {
-    "policy": "policy",
-    "behavior-tech": "human-nature",
-    "finance-markets": "community",
-    "narrative": "community",
-}
-
 SIGNIFICANCE = ["primary", "strong", "supporting"]
-SIGNIFICANCE_PIPS = {"primary": 3, "strong": 2, "supporting": 1}
+
+# A 25-word placeholder caption: the longest a card caption may be (REQUIREMENTS §4.3).
+CAPTION_PLACEHOLDER = (
+    "Placeholder caption of twenty-five words showing how much room this card leaves for a real "
+    "sentence about the scene, the people in it, and why."
+)
 
 # Moments whose illustration slots are wired to named files (docs/ILLUSTRATION_SPECS.md).
 # Until the final art lands, each file is a token-coloured placeholder at the exact size.
@@ -56,13 +53,10 @@ LAYER_SIZE = {"bg": (512, 384), "figure": (192, 320), "overhang-start": (192, 16
 ORCHESTRATOR_SIZE = (128, 208)
 
 ALT = {
-    "human-nature": "A smallholder farmer in a cacao field checks advice on a smartphone (placeholder art).",
-    "community": "A farmer, an extension agent and a student with smartphones (placeholder art).",
+    "human-nature": "A smallholder farmer in a cacao field holding a smartphone (placeholder art).",
+    "community": "A farmer, an extension agent and a student, the adults holding smartphones (placeholder art).",
     "policy": "A mayor and a national government representative with plans and maps (placeholder art).",
 }
-
-LEVERS_CACHE = []
-
 
 def load_site():
     source = SITE_DATA.read_text(encoding="utf-8")
@@ -121,31 +115,22 @@ def cards_html(moment):
     for slot, (slug, label) in enumerate(CARDS):
         hidden = " data-front" if slot == 0 else ' aria-hidden="true" inert'
         bg = (
-            f'\n    <img class="stack-card__bg" src="{art}card-{slug}-bg.svg" width="512" height="384" alt="" decoding="async">'
+            f'\n      <img class="stack-card__bg" src="{art}card-{slug}-bg.svg" width="512" height="384" alt="" decoding="async">\n    '
             if art
             else ""
         )
-        layers = "\n".join("  " + layer_html(art, slug, layer, "stack-card__layer") for layer in LAYERS)
-        badges = "\n".join(
-            f"""    <span class="affinity-badge" data-affinity="{lever["slug"]}" hidden>
-      <svg class="affinity-badge__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 13L13 3M13 3H6M13 3v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="affinity-badge__text"><span class="visually-hidden">Related lever: </span>{html.escape(lever["label"])}</span>
-    </span>"""
-            for lever in LEVERS_CACHE
-            if AFFINITY[lever["slug"]] == slug
-        )
+        layers = "\n".join("    " + layer_html(art, slug, layer, "stack-card__layer") for layer in LAYERS)
         out.append(
             f"""<div id="card-{slug}" class="stack-card stack-card--{slug}" data-card="{slug}" data-label="{html.escape(label)}" data-slot="{slot}"{hidden}>
-  <div class="stack-card__backplate">{bg}
+  <div class="stack-card__backplate">
+    <div class="stack-card__scene">{bg}</div>
+    <div class="stack-card__text">
+      <p class="stack-card__label">{html.escape(label)}</p>
+      <p class="stack-card__caption">{html.escape(CAPTION_PLACEHOLDER)}</p>
+    </div>
   </div>
+  <div class="stack-card__art">
 {layers}
-  <div class="stack-card__text">
-    <p class="stack-card__label">{html.escape(label)}</p>
-    <p class="visually-hidden">Caption placeholder</p>
-    <span class="ph ph--bar ph--w-90 stack-card__caption-ph" aria-hidden="true"></span>
-  </div>
-  <div class="affinity-badges">
-{badges}
   </div>
 </div>"""
         )
@@ -186,9 +171,6 @@ def lever_cards_html(moment, levers, selected):
         slug = lever["slug"]
         is_sel = slug == selected
         level = significance_of(moment, lever)
-        pips = "".join(
-            f'<span class="sig-pips__pip{" is-on" if i < SIGNIFICANCE_PIPS[level] else ""}"></span>' for i in range(3)
-        )
         out.append(
             f"""<div id="lever-{slug}" class="lever-card" role="tab" data-lever-card="{slug}" aria-controls="detail-{slug}" aria-selected="{"true" if is_sel else "false"}" tabindex="{"0" if is_sel else "-1"}">
   <p class="lever-card__title">{html.escape(lever["label"])}</p>
@@ -199,8 +181,6 @@ def lever_cards_html(moment, levers, selected):
   </span>
   <p class="lever-card__meta">
     <span class="sig-tag sig-tag--{level}">{level.capitalize()}</span>
-    <span class="sig-pips" aria-hidden="true">{pips}</span>
-    <span class="lever-card__shown" aria-hidden="true">Shown below</span>
   </p>
 </div>"""
         )
@@ -249,7 +229,6 @@ def detail_panels_html(levers, selected):
 
 def main():
     site = load_site()
-    LEVERS_CACHE.extend(site["levers"])
     template = TEMPLATE.read_text(encoding="utf-8")
     build_date = datetime.date.today().strftime("%-d %B %Y")
     for moment in site["moments"]:

@@ -27,7 +27,7 @@
   align-self: start;
   justify-self: start;
   display: block;
-  padding: var(--viz-logo-tab-pad);
+  padding: var(--viz-logo-tab-pad-block) var(--viz-logo-tab-pad-inline);
   border-end-start-radius: var(--rare-radius-lg);
   border-end-end-radius: var(--rare-radius-lg);
   background: var(--rare-color-background-default);

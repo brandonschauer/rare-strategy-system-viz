@@ -2,13 +2,22 @@
    and the pipe overlay that js/orchestrator.js draws.
 
    Stacking inside the zone (its own context, all --rare-elevation-z-*):
-     figure art (z-base) < pipe (z-raised) < card stack, lever track, figure hands (z-sticky)
-   so the pipe runs in front of the figure's body, through its hands, and tucks under both the
-   card stack and the selected lever card at its ends. */
+     panel backgrounds < figure art (z-base) < pipe (z-raised)
+       < panel content, figure hands (z-sticky)
+   so the pipe runs over the panel bands and in front of the figure's body, but behind every
+   heading, text block and placeholder it crosses (Stage 2 review, §4.4). It passes through the
+   hands and tucks under the card stack and the selected lever card at its ends. */
 
 .orchestration {
   position: relative;
   isolation: isolate;
+}
+
+/* Lift each block of Panel 1 and Panel 2 content above the pipe: the statement, the scenes,
+   the "Levers:" heading and the lever track. The panel backgrounds stay below it. */
+.orchestration .panel__inner > * {
+  position: relative;
+  z-index: var(--rare-elevation-z-sticky);
 }
 
 /* Decorative and never interactive. */

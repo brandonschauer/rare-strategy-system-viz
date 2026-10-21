@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="176" height="160" viewBox="0 0 176 160">
-<!-- PLACEHOLDER card-human-nature-overhang-end.svg: overhang, breaks the right and bottom edges. Replace with the final art at the same canvas. -->
-<!-- lime-500 / lime-700 -->
-<rect x="24" y="16" width="88" height="128" rx="16" fill="#4a6b00"/>
-<rect x="36" y="32" width="64" height="80" rx="6" fill="#7ab800"/>
-<circle cx="140" cy="112" r="28" fill="#7ab800"/>
-<circle cx="132" cy="56" r="20" fill="#008542"/>
+<!-- PLACEHOLDER card-human-nature-overhang-end.svg: overhang, breaks the right edge. Replace with the final art at the same canvas. -->
+<!-- cacao pods lime-500 / lime-700, leaf green-500 -->
+<path d="M96 8 Q104 40 88 64" fill="none" stroke="#4a6b00" stroke-width="6" stroke-linecap="round"/>
+<ellipse cx="128" cy="44" rx="40" ry="18" transform="rotate(-30 128 44)" fill="#008542"/>
+<ellipse cx="72" cy="104" rx="28" ry="48" transform="rotate(-14 72 104)" fill="#7ab800"/>
+<ellipse cx="124" cy="112" rx="24" ry="42" transform="rotate(16 124 112)" fill="#4a6b00"/>
 </svg>

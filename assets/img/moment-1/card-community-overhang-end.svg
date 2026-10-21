@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="176" height="160" viewBox="0 0 176 160">
-<!-- PLACEHOLDER card-community-overhang-end.svg: overhang, breaks the right and bottom edges. Replace with the final art at the same canvas. -->
-<!-- cyan-500 / cyan-700 -->
-<rect x="24" y="16" width="88" height="128" rx="16" fill="#08627a"/>
-<rect x="36" y="32" width="64" height="80" rx="6" fill="#00afd8"/>
-<circle cx="140" cy="112" r="28" fill="#00afd8"/>
-<circle cx="132" cy="56" r="20" fill="#00afd8"/>
+<!-- PLACEHOLDER card-community-overhang-end.svg: overhang, breaks the right edge. Replace with the final art at the same canvas. -->
+<!-- seedling in a pot cyan-700 / cyan-500, foliage cyan-500 -->
+<ellipse cx="136" cy="72" rx="36" ry="16" transform="rotate(-24 136 72)" fill="#00afd8"/>
+<ellipse cx="40" cy="88" rx="32" ry="14" transform="rotate(20 40 88)" fill="#00afd8" fill-opacity="0.7"/>
+<path d="M88 112 V56" stroke="#08627a" stroke-width="6" stroke-linecap="round"/>
+<ellipse cx="68" cy="56" rx="22" ry="11" transform="rotate(24 68 56)" fill="#00afd8"/>
+<ellipse cx="108" cy="44" rx="24" ry="11" transform="rotate(-28 108 44)" fill="#00afd8"/>
+<path d="M52 108 H124 L112 160 H64 Z" fill="#08627a"/>
 </svg>

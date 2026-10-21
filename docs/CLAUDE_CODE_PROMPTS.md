@@ -141,8 +141,8 @@ Build:
    selected lever card through the figure's hands to the card stack. Recompute on selection,
    ResizeObserver, lever-track scroll and stack flips. Attach to the track edge when the selected
    card is scrolled out of view. Animated draw on change (instant under reduced motion). On
-   mobile, a short vertical connector. Add the affinity badge on the related Panel 1
-   card (§4.4). It is required; make it subtle, and never let it reorder the stack.
+   mobile, a short vertical connector. The pipe runs behind text and headings it crosses.
+   No affinity badge on the cards (§4.4, removed in the Stage 2 review).
 5. Dispatch CustomEvent('viz:statechange') after every lever change, and after each card flip
    lands, so annotate.js calls overnote.refresh().
 6. Illustration spec (§7). Write docs/ILLUSTRATION_SPECS.md listing every art asset the

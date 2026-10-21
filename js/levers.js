@@ -12,7 +12,6 @@
  * - Panel 3 cross-fades between pre-rendered panels; text is never re-rendered, only `hidden`
  *   is toggled, so Overnote anchors survive. The caret on Panel 3's top rule follows the
  *   selected card's centre through track scroll and resize.
- * - The related card in the stack shows the lever's affinity badge (§4.4); it never reorders.
  *
  * Events: `viz:leverchange` fires at once (the orchestrator pipe redraws), and
  * `viz:statechange` fires once Panel 3 has settled (annotate.js refreshes Overnote).
@@ -29,7 +28,6 @@ const wrap = track?.closest('.lever-track-wrap');
 const detail = document.getElementById('lever-detail');
 const tabs = track ? [...track.querySelectorAll('[role="tab"]')] : [];
 const panels = [...document.querySelectorAll('[data-lever-detail]')];
-const badges = [...document.querySelectorAll('[data-affinity]')];
 const prevButton = wrap?.querySelector('.lever-scroll-btn--prev');
 const nextButton = wrap?.querySelector('.lever-scroll-btn--next');
 
@@ -160,7 +158,6 @@ export async function selectLever(slug, { updateUrl = true, animate = true } = {
     tab.setAttribute('aria-selected', String(selected));
     tab.tabIndex = selected ? 0 : -1;
   }
-  for (const badge of badges) badge.hidden = badge.dataset.affinity !== slug;
   if (updateUrl) writeUrlLever(slug);
   updateCaret();
   document.dispatchEvent(new CustomEvent('viz:leverchange', { detail: { lever: slug, animate: animate && changed } }));

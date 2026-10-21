@@ -55,19 +55,24 @@
   padding: var(--viz-stack-peek) var(--viz-stack-peek) var(--rare-space-0);
 }
 
-/* Its own stacking context: the three cards order only against each other. */
+/* Its own stacking context: the three cards order only against each other. The cards share
+   one grid cell, so the deck is as tall as the tallest card and every card stretches to it. */
 .card-stack__deck {
   position: relative;
   isolation: isolate;
-  aspect-ratio: var(--viz-stack-card-ratio);
+  display: grid;
 }
 
-/* Card frame: transparent bounds that hold every layer (§4.3). One transform per frame, so
-   every layer (including those breaking the backplate edge) moves and tilts as one unit.
-   Back slots scale about the centre and translate to keep their peeking edge in place. */
+/* Card frame: transparent bounds that hold every layer (§4.3). Its padding is the inset band
+   around the backplate where art may break the edge. One transform per frame, so every layer
+   (including those breaking the backplate edge) moves and tilts as one unit. Back slots scale
+   about the centre and translate to keep their peeking edge in place. */
 .stack-card {
-  position: absolute;
-  inset: var(--rare-space-0);
+  position: relative;
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--viz-stack-inset-block) var(--viz-stack-inset-inline);
   transform-origin: center;
 }
 
@@ -98,11 +103,14 @@
   pointer-events: none;
 }
 
-/* Backplate: the smaller opaque rounded rectangle inset inside the frame. Each card keeps its
-   own tint wherever it sits in the deck (§6.4); the front card is told apart by elevation. */
+/* Backplate: the opaque rounded card the eye reads, inset inside the frame. The scene sits on
+   top; the label and caption have their own band below it, so text never covers the art.
+   Each card keeps its own tint wherever it sits in the deck (§6.4); the front card is told
+   apart by elevation. */
 .stack-card__backplate {
-  position: absolute;
-  inset: var(--viz-stack-inset);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   border-radius: var(--rare-radius-xl);
   background: var(--card-tint);
@@ -133,20 +141,72 @@
   --card-ink: var(--rare-color-orange-700);
 }
 
-/* Background scene: fills the backplate exactly and is clipped to its radius. */
+/* Scene: the 512 × 384 art area at the top of the backplate. */
+.stack-card__scene {
+  flex: none;
+  aspect-ratio: var(--viz-stack-card-ratio);
+}
+
 .stack-card__bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Content layers, positioned in the 640 × 480 frame of docs/ILLUSTRATION_SPECS.md (as % so
-   they scale). Each one deliberately breaks a backplate edge but stays inside the frame. */
+/* Label and caption (§4.3): real HTML text in the band under the scene. Sized for a 10–25 word
+   caption at every width from 360px; the band grows with its text and every card in the deck
+   matches the tallest. */
+.stack-card__text {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: var(--rare-space-1);
+  padding: var(--rare-space-3) var(--rare-space-5) var(--rare-space-5);
+  color: var(--card-ink);
+}
+
+.stack-card__label {
+  font-family: var(--rare-font-family-display);
+  font-size: var(--rare-font-size-500);
+  font-weight: var(--rare-font-weight-bold);
+  line-height: var(--rare-line-height-tight);
+}
+
+.stack-card__caption {
+  font-size: var(--rare-font-size-300);
+  line-height: var(--rare-line-height-normal);
+}
+
+@media (max-width: 639px) {
+  .stack-card__text {
+    padding: var(--rare-space-2) var(--rare-space-3) var(--rare-space-3);
+  }
+
+  .stack-card__label {
+    font-size: var(--rare-font-size-300);
+  }
+
+  .stack-card__caption {
+    font-size: var(--rare-font-size-200);
+  }
+}
+
+/* Content layers sit in a box matching the 640 × 480 art frame of docs/ILLUSTRATION_SPECS.md,
+   pinned to the top of the card, and are positioned in it as % so they scale. Each one breaks
+   a backplate edge into the frame's inset band; none reaches the caption band. */
+.stack-card__art {
+  position: absolute;
+  top: var(--rare-space-0);
+  left: var(--rare-space-0);
+  width: 100%;
+  aspect-ratio: var(--viz-stack-card-ratio);
+  pointer-events: none;
+}
+
 .stack-card__layer {
   position: absolute;
   height: auto;
   max-width: none;
-  pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -167,10 +227,11 @@
   aspect-ratio: 192 / 160;
 }
 
-/* Overhang end: 176 × 160 at (456, 304); breaks the right edge by 56px and the bottom by 32px. */
+/* Overhang end: 176 × 160 at (456, 272); breaks the right edge by 56px and rests on the
+   scene's bottom line, above the caption band. */
 .stack-card__layer--overhang-end {
   left: 71.25%;
-  top: 63.333%;
+  top: 56.667%;
   width: 27.5%;
   aspect-ratio: 176 / 160;
 }
@@ -183,88 +244,6 @@ span.stack-card__layer {
 
 span.stack-card__layer--figure {
   border-radius: var(--rare-radius-pill) var(--rare-radius-pill) var(--rare-radius-lg) var(--rare-radius-lg);
-}
-
-/* Label and caption: real HTML text over the art. */
-.stack-card__text {
-  position: absolute;
-  bottom: calc(var(--viz-stack-inset) + 4%);
-  left: calc(var(--viz-stack-inset) + 4%);
-  display: grid;
-  gap: var(--rare-space-2);
-  width: 38%;
-  padding: var(--rare-space-3);
-  border-radius: var(--rare-radius-lg);
-  background: var(--rare-color-background-default);
-  color: var(--card-ink);
-}
-
-.stack-card__label {
-  font-family: var(--rare-font-family-display);
-  font-size: var(--rare-font-size-500);
-  font-weight: var(--rare-font-weight-bold);
-  line-height: var(--rare-line-height-tight);
-}
-
-.stack-card__caption-ph {
-  background: var(--card-tint);
-}
-
-@media (max-width: 639px) {
-  .stack-card__text {
-    width: 46%;
-    padding: var(--rare-space-2);
-  }
-
-  .stack-card__label {
-    font-size: var(--rare-font-size-300);
-  }
-}
-
-/* ---- Lever-to-card affinity badge (§4.4) ----------------------------------------------
-   Sits on the backplate's top-left corner, which stays visible whether the card peeks left
-   (slot 1) or up-right (slot 2). Icon only on back cards; icon + lever name on the front. */
-
-.affinity-badges {
-  position: absolute;
-  top: calc(var(--viz-stack-inset) - var(--rare-space-3));
-  left: calc(var(--viz-stack-inset) - var(--rare-space-3));
-  display: flex;
-}
-
-.affinity-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--rare-space-1);
-  min-width: var(--rare-size-control-sm);
-  height: var(--rare-size-control-sm);
-  padding-inline: var(--rare-space-2);
-  border-radius: var(--rare-radius-pill);
-  background: var(--rare-color-background-default);
-  box-shadow: var(--viz-shadow-soft);
-  color: var(--rare-color-action-primary);
-  font-size: var(--rare-font-size-200);
-  font-weight: var(--rare-font-weight-semibold);
-  white-space: nowrap;
-}
-
-.affinity-badge[hidden] {
-  display: none;
-}
-
-.affinity-badge__icon {
-  flex: none;
-  width: var(--rare-space-3);
-  height: var(--rare-space-3);
-}
-
-.stack-card:not([data-front]) .affinity-badge {
-  justify-content: center;
-  padding-inline: var(--rare-space-0);
-}
-
-.stack-card:not([data-front]) .affinity-badge__text {
-  display: none;
 }
 
 /* ---- Next control (§4.3) ----------------------------------------------------------------- */

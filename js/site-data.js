@@ -16,7 +16,7 @@ export const SITE = /* JSON:BEGIN */ {
   "moments": [
     {
       "slug": "1-millionth-farmer",
-      "label": "1 Millionth Farmer",
+      "label": "1 Millionth Smallholder Farmer",
       "state": "full",
       "significance": { "policy": "supporting", "behavior-tech": "primary", "finance-markets": "strong", "narrative": "supporting" },
       "significanceDraft": false
