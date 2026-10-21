@@ -132,7 +132,8 @@ Build:
    pointing into Panel 3. Default selection = highest-significance lever for the page's moment
    (from site-data.js); for 1-millionth-farmer that is behavior-tech, the 2nd card — scroll it
    into view. A valid ?lever= overrides; invalid falls back. Selection updates ?lever= with
-   replaceState. Wire the nav Levers menu to the same select function.
+   replaceState. The nav Levers menu keeps its explanatory dialog (§4.1, v0.7); it does not
+   select levers.
 3. Panel 3 (§4.6). Four role="tabpanel" detail blocks pre-rendered in HTML and toggled with
    `hidden`. Each has a graphic box with a figcaption, an h3 subtitle, a description and capability
    chips. Short cross-fade; two-column on desktop, stacked on mobile.
