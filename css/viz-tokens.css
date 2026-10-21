@@ -67,6 +67,8 @@
      pulled card clears the deck, as a fraction of card width (none under reduced motion). */
   --viz-stack-tilt: 3deg;
   --viz-stack-overshoot: 0.12;
+  /* PRODUCT-SCOPE: hover lift of a peeking card that a click would bring to the front. */
+  --viz-stack-peek-lift: calc(-1 * var(--rare-space-1));
   /* PRODUCT-SCOPE: drag distance that counts as a swipe on the front card. */
   --viz-stack-swipe-min: var(--rare-space-9);
 

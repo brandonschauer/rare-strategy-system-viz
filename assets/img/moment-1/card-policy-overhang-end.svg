@@ -1,10 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="176" height="160" viewBox="0 0 176 160">
 <!-- PLACEHOLDER card-policy-overhang-end.svg: overhang, breaks the right edge. Replace with the final art at the same canvas. -->
-<!-- report orange-700 / orange-500 -->
-<rect x="24" y="16" width="96" height="136" rx="10" fill="#a34d17"/>
-<rect x="36" y="36" width="72" height="104" rx="4" fill="#f58233"/>
-<rect x="48" y="96" width="12" height="32" fill="#a34d17"/>
-<rect x="68" y="76" width="12" height="52" fill="#a34d17"/>
-<rect x="88" y="56" width="12" height="72" fill="#a34d17"/>
-<circle cx="144" cy="128" r="24" fill="#f58233"/>
+<!-- rolled plan orange-500 / orange-700, official seal orange-700 -->
+<rect x="16" y="112" width="120" height="36" rx="18" transform="rotate(-12 76 130)" fill="#f58233"/>
+<ellipse cx="22" cy="142" rx="10" ry="18" transform="rotate(-12 22 142)" fill="#a34d17"/>
+<rect x="56" y="76" width="96" height="28" rx="14" transform="rotate(8 104 90)" fill="#f58233" fill-opacity="0.8"/>
+<circle cx="140" cy="132" r="26" fill="#a34d17"/>
+<circle cx="140" cy="132" r="16" fill="none" stroke="#f58233" stroke-width="4"/>
 </svg>

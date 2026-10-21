@@ -1,25 +1,34 @@
 /**
  * Panel 1 card stack (REQUIREMENTS §4.3).
  *
- * The flip follows real-card physics, as a hand pulling the top card off a deck:
- *   1. Pull out: the front card slides sideways (tilting, shadow deepening) until its whole
- *      frame, overhanging layers included, is clear of every other card. It may leave the
- *      browser frame; .page clips the overflow so no scrollbar appears.
- *   2. Advance, starting one offset later: the other cards move up one slot each, underneath.
- *   3. Re-stack at the apex: only once the pulled card is clear does its z-order drop to the
- *      back. That is the one moment depth changes, and nothing overlaps it then.
- *   4. Tuck in: it slides back into the rear slot underneath the others and settles.
+ * Every change of order is one "move" with real-card physics, as a hand working a deck:
+ *   1. Pull out: one card slides sideways (tilting, shadow deepening) until its whole frame,
+ *      overhanging layers included, is clear of every other card. It may leave the browser
+ *      frame; .page clips the overflow so no scrollbar appears.
+ *   2. Shift, starting one offset later: the cards whose slot changes move to their new slots.
+ *   3. Re-stack at the apex: only once the moving card is clear does its z-order change. That
+ *      is the one moment depth changes, and nothing overlaps it then.
+ *   4. Slide in: it slides into its new slot and settles.
+ * Two moves use it:
+ *   - Rotate: the front card goes to the back ([A, B, C] → [B, C, A]); it leaves toward the
+ *     button (or the way it was swiped) and tucks in underneath.
+ *   - Bring to front: a peeking back card comes to the top and the others keep their order
+ *     behind it ([A, B, C], click C → [C, A, B]). It leaves toward the side it peeks from
+ *     (Community left, Policy right), underneath, then rises at the apex and slides in on top.
  * No opacity is ever animated, so nothing fades; only transform moves (plus the backplate
  * shadow, via CSS). Rest positions come from CSS (data-slot); this module reads them as
  * computed transforms, so the layout stays in one place. Timing comes from --viz-motion-*.
  *
- * Inputs: the Next button (click, tap, Enter, Space), Right Arrow anywhere in the stack
- * region, and a horizontal swipe on the front card in either direction (thrown the way it was
- * swiped). One trigger during a flip is queued; more are ignored, so cards never jump.
+ * Inputs: the Rotate button (click, tap, Enter, Space), Right Arrow anywhere in the stack
+ * region, a horizontal swipe on the front card in either direction, and a click or tap on a
+ * peeking card (a pointer shortcut: back cards stay inert, so keyboard users rotate). One move
+ * during another is queued; more are ignored, so cards never jump. In Overnote's Sticky mode
+ * Overnote takes the click, so a click pins a note instead of bringing a card forward.
  * Reduced motion: the same sequence, shorter (about 300ms legs), with no tilt or overshoot.
  *
  * When a card lands: back cards get inert + aria-hidden, the live region announces the scene
- * ("Scene 2 of 3: Community"), and `viz:statechange` fires so Overnote and the pipe refresh.
+ * with the moment's own card label ("Scene 2 of 3: Community"), and `viz:statechange` fires
+ * so Overnote and the pipe refresh.
  */
 const region = document.getElementById('moment-visual');
 const deck = region?.querySelector('.card-stack__deck');
@@ -29,12 +38,13 @@ const announcer = region?.querySelector('.stack-announcer');
 const cards = deck ? [...deck.querySelectorAll('.stack-card')] : [];
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
 const IDENTITY = 'matrix(1, 0, 0, 1, 0, 0)';
-// Pointer travel before a press on the front card counts as a drag rather than a tap.
+// Pointer travel before a press counts as a drag rather than a tap.
 const DRAG_START = 8;
 
 let busy = false;
 let queued = null;
 let drag = null;
+let tap = null;
 
 /** Resolve the --viz-* motion and gesture tokens to numbers through a hidden probe element. */
 function readTokens() {
@@ -72,30 +82,50 @@ const restTransform = (card) => {
   return value === 'none' ? IDENTITY : value;
 };
 
-function request(direction = 1) {
+/* ---- Moves and the one-deep queue -------------------------------------------------------- */
+
+/** A move: rotate ({ rotate: direction }) or bring a card forward ({ front: card }). */
+function request(move) {
   if (busy) {
-    queued ??= direction;
+    queued ??= move;
     return;
   }
-  flip(direction);
+  run(move);
 }
 
-/** Runs one flip, then the queued one if any. A failure never leaves the stack locked. */
-async function flip(direction, fromX = 0) {
+/** Runs one move, then the queued one if any. A failure never leaves the stack locked. */
+async function run(move, fromX = 0) {
   busy = true;
+  clearPeekHover();
   try {
-    await runFlip(direction, fromX);
+    const order = bySlot();
+    if (move.front) {
+      const index = order.indexOf(move.front);
+      // Already in front (a queued click that an earlier move made moot): nothing to do.
+      if (index > 0) {
+        const finalOrder = [move.front, ...order.filter((card) => card !== move.front)];
+        // Community peeks from the left (slot 1), Policy from the upper right (slot 2).
+        await animateMove(move.front, index === 1 ? -1 : 1, finalOrder, 0);
+      }
+    } else {
+      const [front, ...rest] = order;
+      await animateMove(front, move.rotate, [...rest, front], fromX);
+    }
   } finally {
     busy = false;
   }
   if (queued !== null) {
-    const nextDirection = queued;
+    const nextMove = queued;
     queued = null;
-    flip(nextDirection);
+    run(nextMove);
   }
 }
 
-async function runFlip(direction, fromX) {
+/**
+ * Moves one card out of the deck sideways, shifts the others into their slots in finalOrder,
+ * changes depth only at the apex, then slides the card into its own new slot.
+ */
+async function animateMove(mover, direction, finalOrder, fromX) {
   const t = readTokens();
   const reduced = REDUCED.matches;
   const leg = reduced ? t.legReduced : t.leg;
@@ -104,15 +134,16 @@ async function runFlip(direction, fromX) {
   const timing = { duration: leg, easing: t.easing, fill: 'both' };
 
   const order = bySlot();
-  const [pulled, ...rest] = order;
-  pulled.style.transform = '';
-  const rests = order.map(restTransform);
+  mover.style.transform = '';
+  const rests = order.map(restTransform); // the rest transform of each slot
+  const from = order.indexOf(mover);
+  const to = finalOrder.indexOf(mover);
 
-  // How far the front card must travel for its frame to clear every slot the deck occupies
-  // (the advancing cards only ever move within those slots). Its own rest rect is measured
-  // without any swipe offset; the tilt widens its bounding box, so that is added to the margin.
+  // How far the card must travel for its frame to clear every slot the deck occupies (the
+  // shifting cards only ever move between those slots). Its own rest rect is measured without
+  // any swipe offset; the tilt widens its bounding box, so that is added to the margin.
   const frames = order.map((card) => card.getBoundingClientRect());
-  const own = frames[0];
+  const own = frames[from];
   const margin =
     t.gap + own.height * Math.abs(Math.sin((tilt * Math.PI) / 180)) + (reduced ? 0 : own.width * t.overshoot);
   const dx =
@@ -120,35 +151,39 @@ async function runFlip(direction, fromX) {
       ? Math.max(...frames.map((r) => r.right)) - own.left + margin
       : Math.min(...frames.map((r) => r.left)) - own.right - margin;
 
-  // 1. Pull out.
-  pulled.classList.add('is-pulled');
-  const out = `translateX(${dx}px) rotate(${tilt}deg)`;
-  const pull = pulled.animate(
-    [{ transform: `translateX(${fromX}px) rotate(0deg)` }, { transform: out }],
+  // 1. Pull out, keeping the card's own slot scale while it travels.
+  mover.classList.add('is-pulled');
+  const out = `translateX(${dx}px) rotate(${tilt}deg) ${rests[from]}`;
+  const pull = mover.animate(
+    [{ transform: `translateX(${fromX}px) rotate(0deg) ${rests[from]}` }, { transform: out }],
     timing,
   );
 
-  // 2. Advance, underneath the pulled card, starting one offset later.
-  const advances = rest.map((card, i) =>
-    card.animate([{ transform: rests[i + 1] }, { transform: rests[i] }], { ...timing, delay: offset }),
-  );
+  // 2. Shift the others to their new slots, starting one offset later. Their order relative to
+  //    each other never changes, so none of them passes through another.
+  const shifts = order
+    .filter((card) => card !== mover && finalOrder.indexOf(card) !== order.indexOf(card))
+    .map((card) =>
+      card.animate(
+        [{ transform: rests[order.indexOf(card)] }, { transform: rests[finalOrder.indexOf(card)] }],
+        { ...timing, delay: offset },
+      ),
+    );
 
   await pull.finished;
 
-  // 3. Re-stack at the apex: the pulled card is clear of the deck, so depth changes now.
+  // 3. Re-stack at the apex: the moving card is clear of the deck, so depth changes now.
   //    Running animations hold every card where it is; only z-order changes.
-  rest.forEach((card, i) => (card.dataset.slot = String(i)));
-  pulled.dataset.slot = String(order.length - 1);
-  pulled.classList.remove('is-pulled');
-  pulled.removeAttribute('data-front');
+  finalOrder.forEach((card, slot) => (card.dataset.slot = String(slot)));
+  mover.classList.remove('is-pulled');
 
-  // 4. Tuck in to the rear slot, underneath the others.
-  const tuck = pulled.animate([{ transform: out }, { transform: rests[order.length - 1] }], timing);
+  // 4. Slide in to the new slot.
+  const settle = mover.animate([{ transform: out }, { transform: rests[to] }], timing);
   pull.cancel();
 
-  await Promise.all([tuck.finished, ...advances.map((a) => a.finished)]);
+  await Promise.all([settle.finished, ...shifts.map((a) => a.finished)]);
   // The CSS rest positions now match where every animation ended, so dropping them is seamless.
-  [tuck, ...advances].forEach((a) => a.cancel());
+  [settle, ...shifts].forEach((a) => a.cancel());
   land();
 }
 
@@ -161,16 +196,46 @@ function land() {
     if (isFront) card.removeAttribute('aria-hidden');
     else card.setAttribute('aria-hidden', 'true');
   }
-  announcer.textContent = `Scene ${cards.indexOf(front) + 1} of ${cards.length}: ${front.dataset.label}`;
+  // The label is the moment's own (authored per moment); skeleton pages have none yet.
+  const label = front.dataset.label;
+  announcer.textContent = `Scene ${cards.indexOf(front) + 1} of ${cards.length}${label ? `: ${label}` : ''}`;
   document.dispatchEvent(
     new CustomEvent('viz:statechange', { detail: { card: front.dataset.card, source: 'card-stack' } }),
   );
 }
 
-/* ---- Swipe on the front card --------------------------------------------------------------
- * The card follows the pointer horizontally; past --viz-stack-swipe-min it is thrown that way
- * (the pull continues from where the finger let go), otherwise it springs back. Vertical
- * movement is left to the page (touch-action: pan-y). */
+/* ---- Pointer: which card is under the pointer -------------------------------------------
+ * Back cards are inert, so pointer events never land on them. The deck works out from
+ * geometry which card is visible at a point: the first card, front to back, whose backplate
+ * or art layers contain it. */
+
+function cardAt(x, y) {
+  const inside = (el) => {
+    const r = el.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  };
+  return (
+    bySlot().find((card) =>
+      [card.querySelector('.stack-card__backplate'), ...card.querySelectorAll('.stack-card__layer')].some(inside),
+    ) ?? null
+  );
+}
+
+/* Peeking cards: a pointer cursor and a slight lift on hover (pointer devices). */
+function setPeekHover(card) {
+  for (const c of cards) c.toggleAttribute('data-peek-hover', c === card);
+  deck.toggleAttribute('data-peek-hover', Boolean(card));
+}
+
+function clearPeekHover() {
+  setPeekHover(null);
+}
+
+/* ---- Swipe on the front card, tap on a peeking card --------------------------------------
+ * On the front card the card follows the pointer horizontally; past --viz-stack-swipe-min it
+ * is thrown that way (the pull continues from where the finger let go), otherwise it springs
+ * back. Vertical movement is left to the page (touch-action: pan-y). A press on a peeking
+ * card that doesn't travel is a tap; its click brings that card to the front. */
 
 function endDrag(event, { cancelled = false } = {}) {
   if (!drag || event.pointerId !== drag.id) return;
@@ -179,7 +244,7 @@ function endDrag(event, { cancelled = false } = {}) {
   if (!active) return;
   const t = readTokens();
   if (!cancelled && Math.abs(dx) >= t.swipeMin && !busy) {
-    flip(Math.sign(dx), dx);
+    run({ rotate: Math.sign(dx) }, dx);
     return;
   }
   card.style.transform = '';
@@ -189,15 +254,26 @@ function endDrag(event, { cancelled = false } = {}) {
   });
 }
 
-function initSwipe() {
+function initPointer() {
   deck.addEventListener('pointerdown', (event) => {
-    const card = event.target.closest('.stack-card');
-    if (busy || !card || card.dataset.slot !== '0' || event.button !== 0) return;
+    if (event.button !== 0) return;
+    const card = cardAt(event.clientX, event.clientY);
+    tap = card && card.dataset.slot !== '0' ? { id: event.pointerId, card, x0: event.clientX, y0: event.clientY } : null;
+    if (busy || !card || card.dataset.slot !== '0') return;
     drag = { id: event.pointerId, card, x0: event.clientX, y0: event.clientY, dx: 0, active: false };
   });
 
   deck.addEventListener('pointermove', (event) => {
-    if (!drag || event.pointerId !== drag.id) return;
+    if (tap && event.pointerId === tap.id && Math.hypot(event.clientX - tap.x0, event.clientY - tap.y0) > DRAG_START) {
+      tap = null;
+    }
+    if (!drag || event.pointerId !== drag.id) {
+      if (event.pointerType === 'mouse' && !busy) {
+        const card = cardAt(event.clientX, event.clientY);
+        setPeekHover(card && card.dataset.slot !== '0' ? card : null);
+      }
+      return;
+    }
     const dx = event.clientX - drag.x0;
     const dy = event.clientY - drag.y0;
     if (!drag.active) {
@@ -214,17 +290,30 @@ function initSwipe() {
   });
 
   deck.addEventListener('pointerup', (event) => endDrag(event));
-  deck.addEventListener('pointercancel', (event) => endDrag(event, { cancelled: true }));
+  deck.addEventListener('pointercancel', (event) => {
+    tap = null;
+    endDrag(event, { cancelled: true });
+  });
+  deck.addEventListener('pointerleave', clearPeekHover);
+
+  // A click, not pointerup, so Overnote's Sticky mode (which takes clicks) wins.
+  deck.addEventListener('click', () => {
+    if (!tap) return;
+    const { card } = tap;
+    tap = null;
+    request({ front: card });
+  });
+
   // Dragging an image or selecting text would fight the swipe.
   deck.addEventListener('dragstart', (event) => event.preventDefault());
 }
 
 if (deck && next && announcer && cards.length) {
-  next.addEventListener('click', () => request(1));
+  next.addEventListener('click', () => request({ rotate: 1 }));
   region.addEventListener('keydown', (event) => {
     if (event.key !== 'ArrowRight' || event.altKey || event.ctrlKey || event.metaKey) return;
     event.preventDefault();
-    request(1);
+    request({ rotate: 1 });
   });
-  initSwipe();
+  initPointer();
 }

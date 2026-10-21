@@ -1,6 +1,6 @@
 # Rare Strategy System Viz — Requirements
 
-**Status:** Draft v0.3 · 2026-10-17 (v0.2: aligned to the Rare Design System; v0.3: moment statement and visualization merged into Panel 1, and panels renumbered 1–3; v0.4: Next-only physical card flip, lever pages planned, Q2/Q4/Q6 resolved; v0.5: all open questions resolved, colour plan drawn from Rare tokens rather than LEGO colours; v0.6: Stage 1 review: rare.org-style non-sticky header with site title, revised description, no scene counter, no "in development" label, stronger selected-lever indicator; v0.7: Levers menu opens an explanatory dialog instead of selecting a lever)
+**Status:** Draft v0.9 · 2026-10-20 (v0.2: aligned to the Rare Design System; v0.3: moment statement and visualization merged into Panel 1, and panels renumbered 1–3; v0.4: Next-only physical card flip, lever pages planned, Q2/Q4/Q6 resolved; v0.5: all open questions resolved, colour plan drawn from Rare tokens rather than LEGO colours; v0.6: Stage 1 review: rare.org-style non-sticky header with site title, revised description, no scene counter, no "in development" label, stronger selected-lever indicator; v0.7: Levers menu opens an explanatory dialog instead of selecting a lever; v0.8: Stage 2 review: roomier logo tab, menu label matches title, 10–25 word captions, no affinity badge, no pips, no "Shown below", lever stem styled like the pipe, pipe behind text; v0.9: Stage 2 review round 2: "personally tailored", click a peeking card to bring it forward, "Rotate" hover label, per-moment card labels, Community 2–3 people, Policy two people with no viewer-facing data)
 **Source context:** [`rare-strategy-2030.md`](../rare-strategy-2030.md) · [Overnote requirement](../../overnote/docs/OVERNOTE_REQUIREMENT.md) · LEGO mockups in [`concepts/`](../concepts/) · Rare Design System (`../rare-design-system-main/`) · Core tokens (`../speak-sustainability/design-tokens/build/rare-core.css`)
 
 ---
@@ -42,13 +42,15 @@ Each moment has its own URL. That is required: Overnote stores annotations per `
 
 | # | Menu label | Slug | Build state | Likely primary lever (draft, for later) |
 | --- | --- | --- | --- | --- |
-| 1 | 1 Millionth Farmer | `1-millionth-farmer` | **Full** | Behavioral Science & Technology |
+| 1 | 1 Millionth Smallholder Farmer | `1-millionth-farmer` | **Full** | Behavioral Science & Technology |
 | 2 | Coastal 5,000 Convening | `coastal-5000-convening` | Skeleton | Narrative Shift |
 | 3 | Impact Bond III Launch | `impact-bond-iii-launch` | Skeleton | Finance & Markets |
 | 4 | Local Training: Partner-Led | `local-training-partner-led` | Skeleton | Behavioral Science & Technology |
 | 5 | Policy Win: Press coverage of community | `policy-win-press-coverage` | Skeleton | Policy |
 | 6 | Savings Club makes 1,000th Loan | `savings-club-1000th-loan` | Skeleton | Finance & Markets |
 | 7 | NGO partner credits Behavioral Design Agent | `ngo-partner-credits-bda` | Skeleton | Behavioral Science & Technology |
+
+Moment 1's menu label matches its title wording, "1 Millionth Smallholder Farmer" (Stage 2 review). Its slug stays `1-millionth-farmer`, because changing a URL would orphan its Overnote annotations and break links.
 
 The "likely primary lever" column is a placeholder for content planning. It is not built in this phase.
 
@@ -142,7 +144,7 @@ Panel 1 combines the moment's statement and its visualization. The two do the sa
 ### 4.1 Global nav
 
 - **Layout, modelled on rare.org's header at the top of its page** (changed after the Stage 1 review):
-  - **Logo tab.** The stacked full-colour lockup (§6.4) sits in a narrow white tab (`background-default`) attached to the top edge of the page. The tab has square top corners flush with the viewport, rounded bottom corners (`radius-lg`) and a soft shadow, and is only as wide as the logo plus `space-4` padding each side. It hangs over the top of Panel 1. It links to the site root, with alt text "Rare".
+  - **Logo tab.** The stacked full-colour lockup (§6.4) sits in a narrow white tab (`background-default`) attached to the top edge of the page. The tab has square top corners flush with the viewport, rounded bottom corners (`radius-lg`) and a soft shadow, and gives the logo generous negative space, like rare.org (Stage 2 review). Use `space-7` padding on each side and `space-6` top and bottom on desktop, so the logo fills only about 40% of the tab's width (rare.org's tile is 118 × 127px around a 60 × 78px logo). On mobile, use `space-5` and `space-4`. It hangs over the top of Panel 1. It links to the site root, with alt text "Rare".
   - **Site title.** "Moments that deliver Rare's strategy" sits between the logo tab and the menus, in `--rare-font-family-display`, `text-default`, at about `font-size-500`. It's a site title, not the page `<h1>` (the moment title stays the only `<h1>`).
   - **Menus** (Moments, Levers) on the right, as below.
   - **No separate nav bar.** There is no nav background and no bottom rule. The title and menus sit directly on Panel 1's background (`background-subtle`), so the nav reads as the top of Panel 1.
@@ -165,7 +167,7 @@ The top of Panel 1, the `#moment-statement` block. It introduces the scenes dire
 | --- | --- |
 | Eyebrow | `Moment:` |
 | Title (phrase-based, `<h1>`) | The 1 millionth smallholder farmer is equipped with tailored advice to shift to climate-resilient regenerative practices |
-| Description (10–15 words) | A cacao farmer adds locally tailored guidance to their phone. *(10 words; revised in the Stage 1 review)* |
+| Description (10–15 words) | A cacao farmer adds personally tailored guidance to their phone. *(10 words; revised in the Stage 1 and Stage 2 reviews)* |
 
 *Note:* the suggested title had two typos, "advise" and "client-resilient". They are corrected above to "advice" and "climate-resilient".
 
@@ -182,15 +184,15 @@ The lower part of Panel 1, the `#moment-visual` region beneath the statement.
 1. **Card frame:** a transparent container that sets the card's bounds and holds every content element.
 2. **Backplate:** a smaller, opaque, rounded rectangle inset inside the frame (for example, inset 8–12% on each side). It is the visual "card" the eye reads.
 3. **Content layers:** illustration cut-outs (people, plants, props) positioned over the backplate. Some layers deliberately **extend past the backplate's edges** but stay inside the frame. This creates the "off the edge" effect, like the leaves and figures that overhang the baseplates in the LEGO mockup.
-4. **Label and caption** as real HTML text (not inside an image or SVG) so they can be annotated: a short card label and a one-sentence caption.
+4. **Label and caption** as real HTML text (not inside an image or SVG) so they can be annotated: a short card label and a caption of **10–25 words** (Stage 2 review). **Labels are content, not fixed names** (Stage 2 review): each moment authors its own label for each card. The three card *roles* (`human-nature`, `community`, `policy`) stay fixed, because they set the ids, the order and the colour tints. The labels below are the drafts for this moment only. The text box must fit 25 words without overflowing or covering faces at every width from 360px up. Test it with a 25-word placeholder.
 
 **The cards (default z-order, front to back)**
 
 | Z | Card | Label | Depicts | Caption (draft) |
 | --- | --- | --- | --- | --- |
 | 1 (front, centred) | `card-human-nature` | Human & Nature | Smallholder farmer using a smartphone in their cacao field. Cacao pods, shade-tree leaves and a phone screen showing an advice tip break the frame. | Advice about this plot, this season, in the farmer's own language. |
-| 2 | `card-community` | Community | Another farmer and an extension agent (both holding smartphones) and a student. | Peers and a local partner's extension agent make the new practice normal and supported. |
-| 3 | `card-policy` | Policy | A mayor and a national government representative with plans, maps and data-driven reports. | Local and national government back the practice with rights, plans and programs. |
+| 2 | `card-community` | Community | **Two or three** community members, for example another farmer, an extension agent and a student. Anyone holding a smartphone has the screen turned toward themselves. | Peers and a local partner's extension agent make the new practice normal and supported. |
+| 3 | `card-policy` | Policy | **Two people**: a mayor and a national government representative, with plans and maps they are working from. **No screen, chart or report is presented toward the viewer** (Stage 2 review). | Local and national government back the practice with rights, plans and programs. |
 
 **Offset and layout**
 
@@ -199,14 +201,16 @@ The lower part of Panel 1, the `#moment-visual` region beneath the statement.
 
 **Flip control**
 
-- **A single Next control** (an arrow button, `--rare-size-control-md`) sits beside the stack: on the right on desktop, below on mobile. There is no Previous control. Next is labelled "Next scene" for assistive tech. There is **no visible position counter** (removed in the Stage 1 review). A visually hidden live region announces the new front card, for example "Scene 2 of 3: Community". The order cycles: after the third card, Next brings the first card back to the front.
+- **A single Next control** (an arrow button, `--rare-size-control-md`) sits beside the stack: on the right on desktop, below on mobile. There is no Previous control.
+- **Hover label** (Stage 2 review): on hover and on keyboard focus, the button reveals a short text label, **"Rotate"**, saying what it will do. The label slides or appears beside the button (toward the stack on desktop, above it on mobile) in `text-muted`, using the motion tokens, and hides again on leave or blur. Its accessible name is "Rotate scenes", so the visible word is part of the name (WCAG 2.5.3). On touch-only devices (`hover: none`) the label shows permanently beside the button. There is **no visible position counter** (removed in the Stage 1 review). A visually hidden live region announces the new front card, for example "Scene 2 of 3: Community". The order cycles: after the third card, Next brings the first card back to the front.
 - **Inputs that trigger Next:**
   - clicking or tapping the button
   - Enter or Space on the focused button
   - the Right Arrow key while focus is anywhere inside the stack region
   - a horizontal swipe on the front card, in either direction. The card is thrown out the way it was swiped.
 
-  Back cards are not clickable.
+- **Clicking a peeking card brings it to the front** (Stage 2 review). Clicking or tapping the visible edge of a back card pulls that card out of the deck and places it on top. The other cards keep their order behind it, so [A, B, C] with C clicked becomes [C, A, B]. Peeking cards show a pointer cursor and a slight lift on hover. This is a pointer shortcut. Keyboard users use Rotate, so back-card content stays `inert` and `aria-hidden`.
+- **Bring-to-front physics** follow the same rules as the flip. The clicked card slides out sideways, toward the side it peeks from, until its frame is fully clear of the deck. At that apex its z-order rises to the top; this is the only depth change, and nothing overlaps it. The cards that were in front of it move back one slot each, and it slides into the front slot. No fades, and nothing passes through anything. It uses the same `--viz-motion-*` legs and reduced-motion variant, joins the same one-deep queue, dispatches `viz:statechange` and announces the new front card in the live region.
 
 **Flip animation: real-card physics**
 
@@ -228,10 +232,10 @@ The flip should look like a hand pulling the top card off a physical deck and tu
 ### 4.4 Orchestrator (straddles Panels 1 and 2)
 
 - A **Rare team member** figure stands in the right gutter, overlapping the boundary between Panels 1 and 2. They hold a **pipe or line** connecting the **selected lever card** in Panel 2 to the **card stack** in Panel 1.
-- The pipe is an SVG overlay inside `#orchestration`. It is `aria-hidden="true"` and `pointer-events: none`. Its path is a smooth cubic Bézier from the top edge of the selected lever card, through the figure's hands, to the stack edge.
+- The pipe is an SVG overlay inside `#orchestration`. It is `aria-hidden="true"` and `pointer-events: none`. **Layering** (Stage 2 review): the pipe runs *behind* page content it crosses. Headings, text and placeholder bars (for example the "Levers:" heading) sit on top of it. Only the cards it connects should look physically attached to it. Its path is a smooth cubic Bézier from the top edge of the selected lever card, through the figure's hands, to the stack edge.
 - **Recompute the path** on: lever selection, window resize (`ResizeObserver` on `#orchestration`), horizontal scroll of the lever track, and card-stack flips. If the selected card is scrolled out of view, the pipe attaches to the nearest visible edge of the track.
 - On lever change, the pipe animates to the new card (stroke-dash draw, about 500ms; instant under reduced motion).
-- **Lever-to-card affinity** (required; Q5): each lever has a related card in the stack (Policy → Policy, Behavioral Science & Technology → Human & Nature, Finance & Markets → Community, Narrative Shift → Community). When that lever is selected, the related card shows a small, subtle lever badge, visible on its peeking edge when it isn't in front. It **does not** reorder the stack on its own; the user controls the stack.
+- **No lever-to-card affinity badge** (removed in the Stage 2 review, reversing Q5). Moment cards carry no lever pills or badges; the pipe alone connects the selected lever to the stack.
 - **Mobile:** the figure shrinks and sits between Panels 1 and 2. The pipe becomes a short vertical connector from the stack to the lever track.
 - The figure has a visually hidden description: "A Rare team member connects the levers to the moment. Rare orchestrates; local partners deliver."
 - Stays below Overnote's z-index (see §9).
@@ -242,10 +246,11 @@ The flip should look like a hand pulling the top card off a physical deck and tu
 - **Four lever cards** in the fixed order from §2.2. Each card has:
   - A lever title
   - A one-sentence description of how this lever enables *this* moment
-  - A **significance indicator** (recommended): a labelled tag such as **Primary**, **Strong** or **Supporting**, with an optional 1–3 pip meter. Levers are allowed to differ in importance.
+  - A **significance indicator** (recommended): a labelled tag such as **Primary**, **Strong** or **Supporting**, with **no pip meter** (removed in the Stage 2 review; the tag alone carries significance). Levers are allowed to differ in importance.
 - **Scrolling:** the cards sit in a horizontal track that scrolls left and right when they do not fit (`overflow-x: auto`, `scroll-snap-type: x mandatory`). Edge fades and small scroll buttons appear only when there is overflow. On wide desktops all four may fit with no scroll.
 - **Hover and focus:** lift (translateY −2 to −4px), stronger shadow, border or accent tint, and a pointer cursor. A matching visible focus ring for keyboard users.
 - **Selected state:** distinct from hover. Use a solid accent border or background and a **caret** under the card pointing down into Panel 3. The caret echoes the notch in the LEGO mockup; colours are in §6.4. **The indicator must be strong** (Stage 1 review): it has to read unmistakably as "this card is choosing what Panel 3 shows", not just as a highlighted card. Stage 2 should explore options such as a larger caret, a connecting band from the card into Panel 3's top rule, or repeating the lever's name in Panel 3's heading, and pick the clearest.
+  - **As built and revised in the Stage 2 review:** the stem (arrow) that runs down from the selected card into Panel 3 is drawn **in the same style as the orchestrator pipe**: same stroke colour, width and ribbed texture. Rare's connections then read as one visual system. There is **no "Shown below" text** on the card; the arrow already says it.
 - **Pattern:** WAI-ARIA **Tabs**. The track is `role="tablist"`, cards are `role="tab"` with `aria-selected` and `aria-controls="detail-<slug>"`, and Panel 3's details are `role="tabpanel"`. Arrow keys move between tabs; Enter/Space selects.
 - **Default selection on load:** the lever with the highest significance for the moment. For 1 Millionth Farmer that is **Behavioral Science & Technology**, the second card. If it is not visible in the track, scroll it into view. A valid `?lever=` in the URL overrides the default.
 
@@ -397,7 +402,6 @@ Transition: cross-fade or slide (about 250ms) when the lever changes. On mobile,
 | **Panel 1: Moment** | `background-subtle` (the canvas, so the coloured cards carry the panel) | "Moment:" eyebrow in `lime-700`; title in `text-default`; description and context line in `text-muted` | lime-700 on gray-50 5.71; gray-700 on gray-50 5.13 |
 | Card backplates | Each card keeps its own tint, whatever its position in the stack: **Human & Nature `lime-100`**, **Community `cyan-100`**, **Policy `orange-100`**. Radius `xl`. The front card is distinguished by elevation (a stronger shadow), not colour. | Label and caption in the matching ink: `lime-700`, `cyan-700`, `orange-700`. The art uses the same ramp (§7). | 5.61, 6.13, 5.19 |
 | Next button | `action-primary` button (hover `action-primary-hover`) | White arrow | white on blue-500 6.53 |
-| Affinity badge | `background-default` pill | `action-primary` icon and text | 6.53 |
 | **Panel 2: Levers** | `background-muted` band, which separates it from Panel 1 | "Levers:" eyebrow in `cyan-700` (on white chip) or `text-default`; heading in `text-default` | ink on gray-100 14.4 |
 | Lever card: resting | `background-default`, `border-default` and a soft shadow (the light border alone isn't enough to outline the card, at 1.29:1) | Title in `text-default`; description in `text-muted` | gray-700 on white 5.56 |
 | Lever card: hover | Lifts, with the border changing to `border-strong` | — | border 5.56 vs white |
@@ -529,7 +533,7 @@ Follow [`OVERNOTE_REQUIREMENT.md`](../../overnote/docs/OVERNOTE_REQUIREMENT.md) 
 
 - [ ] Nav: the logo, Moments menu (7 items, current one marked) and Levers menu work by mouse, keyboard and touch.
 - [ ] Panel 1 statement shows the eyebrow, an `<h1>` title and a 10–15 word description, above the card stack.
-- [ ] Panel 1 scenes: three layered, offset cards in the specified default order. Art breaks the backplate edge. The Next button, Enter/Space, Right Arrow and swipe each cycle the cards. The front card visibly leaves the stack before re-stacking behind it, never passing through another card. There is no horizontal page scroll during the flip. No visible counter; a screen reader announces each new scene.
+- [ ] Panel 1 scenes: three layered, offset cards in the specified default order. Art breaks the backplate edge. The Rotate button (with its hover/focus label), Enter/Space, Right Arrow and swipe each cycle the cards. Clicking a peeking card brings it to the front with the same no-pass-through physics. The front card visibly leaves the stack before re-stacking behind it, never passing through another card. There is no horizontal page scroll during the flip. No visible counter; a screen reader announces each new scene.
 - [ ] Panel 2: four lever cards in fixed order, each with title, description and significance. The track scrolls when it overflows. Hover, focus and selected states are distinct. **Behavioral Science & Technology is preselected on load.**
 - [ ] Panel 3 updates when a lever is selected and shows a graphic, subtitle, description and capabilities.
 - [ ] Orchestrator: the figure straddles Panels 1 and 2. The pipe connects the selected lever to the stack and re-routes on selection, resize and track scroll.
@@ -552,7 +556,7 @@ Follow [`OVERNOTE_REQUIREMENT.md`](../../overnote/docs/OVERNOTE_REQUIREMENT.md) 
 | Q2 | ~~What should the Levers dropdown do long-term?~~ | **Resolved:** navigate to lever pages that summarise the lever and list what each moment requires of it (§2.4). For now it opens a dialog describing that page (§4.1). |
 | Q3 | ~~Token gaps?~~ | **Resolved:** the colour gaps are gone, because the colour plan (§6.4) uses only existing tokens and doesn't follow the LEGO colours. The one remaining gap, a slower motion duration, stays product-scope (`--viz-motion-*`) and is logged in `TOKEN_GAPS.md` in case Core wants it later. |
 | Q4 | ~~Illustration sourcing?~~ | **Resolved:** generated and specified by Brandon, from a mix of stock and AI re-rendered photos in a Rare-branded style. Claude Code writes the specs and placeholders (§7). |
-| Q5 | ~~Affinity badge?~~ | **Resolved:** yes. A subtle badge on the related card; it never reorders the stack (§4.4). |
+| Q5 | ~~Affinity badge?~~ | **Resolved, then reversed in the Stage 2 review:** no badge. Cards carry no lever markers (§4.4). |
 | Q6 | ~~Moment 6 label?~~ | **Resolved:** "Savings Club makes 1,000th Loan" (`savings-club-1000th-loan`). "Land" was a typo. |
 | Q7 | ~~Public or private?~~ | **Resolved:** public on GitHub Pages, with `noindex` on every page. |
 | Q8 | ~~Farmer's geography?~~ | **Resolved:** an unspecified tropical cacao-growing region. Avoid details that tie it to one country. |

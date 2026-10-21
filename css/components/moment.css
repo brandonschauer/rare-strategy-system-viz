@@ -98,9 +98,25 @@
     scale(var(--viz-stack-scale-2));
 }
 
-/* Back cards are not clickable (they are also inert). */
+/* Back cards are inert, so pointer events pass through them to the deck; js/card-stack.js
+   works out from geometry which peeking card is under the pointer. */
 .stack-card:not([data-slot="0"]) {
   pointer-events: none;
+}
+
+/* A peeking card under a mouse pointer lifts slightly and the deck shows a pointer cursor:
+   a click brings that card to the front (§4.3). The lift uses `translate`, which composes
+   with the slot transform the flip animates. */
+.stack-card {
+  transition: translate var(--rare-motion-duration-fast) var(--rare-motion-easing-standard);
+}
+
+.stack-card[data-peek-hover] {
+  translate: 0 var(--viz-stack-peek-lift);
+}
+
+.card-stack__deck[data-peek-hover] {
+  cursor: pointer;
 }
 
 /* Backplate: the opaque rounded card the eye reads, inset inside the frame. The scene sits on
@@ -246,7 +262,7 @@ span.stack-card__layer--figure {
   border-radius: var(--rare-radius-pill) var(--rare-radius-pill) var(--rare-radius-lg) var(--rare-radius-lg);
 }
 
-/* ---- Next control (§4.3) ----------------------------------------------------------------- */
+/* ---- Rotate control (§4.3) --------------------------------------------------------------- */
 
 /* Above the cards, so a card thrown toward it slides underneath and it stays clickable. */
 .stack-controls {
@@ -264,11 +280,6 @@ span.stack-card__layer--figure {
   }
 }
 
-@media (min-width: 1024px) {
-  .stack-controls {
-    flex-direction: column;
-  }
-}
 
 .stack-next {
   display: grid;
@@ -292,4 +303,56 @@ span.stack-card__layer--figure {
 .stack-next svg {
   width: var(--rare-space-5);
   height: var(--rare-space-5);
+}
+
+/* "Rotate": says what the button does. Revealed on hover and keyboard focus, beside the button
+   toward the stack on desktop and above it below 1024px; always shown on touch-only devices.
+   Decorative (aria-hidden): the button's accessible name, "Rotate scenes", includes the word. */
+.stack-next__label {
+  position: absolute;
+  color: var(--rare-color-text-muted);
+  font-size: var(--rare-font-size-300);
+  font-weight: var(--rare-font-weight-semibold);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity var(--rare-motion-duration-base) var(--rare-motion-easing-standard),
+    translate var(--rare-motion-duration-base) var(--rare-motion-easing-standard);
+}
+
+.stack-next:is(:hover, :focus-visible) + .stack-next__label {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (max-width: 1023px) {
+  .stack-next__label {
+    bottom: calc(100% + var(--rare-space-1));
+    left: 50%;
+    transform: translateX(-50%);
+    translate: 0 var(--rare-space-1);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stack-next__label {
+    top: 50%;
+    right: calc(100% + var(--rare-space-2));
+    transform: translateY(-50%);
+    translate: var(--rare-space-2) 0;
+  }
+}
+
+@media (hover: none) {
+  .stack-next__label {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-next__label {
+    transition: none;
+  }
 }

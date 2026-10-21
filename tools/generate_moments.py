@@ -17,20 +17,21 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "templates" / "moment.html"
 SITE_DATA = ROOT / "js" / "site-data.js"
 
-# Real Panel 1 statement text (REQUIREMENTS §4.2). Every other moment gets placeholders.
-STATEMENTS = {
+# Authored Panel 1 content per moment: the statement (REQUIREMENTS §4.2) and each card's label
+# (§4.3: labels are per-moment content, not fixed names). Moments not listed get placeholders.
+CONTENT = {
     "1-millionth-farmer": {
         "eyebrow": "Moment:",
         "title": "The 1 millionth smallholder farmer is equipped with tailored advice to shift to climate-resilient regenerative practices",
-        "description": "A cacao farmer adds locally tailored guidance to their phone.",
+        "description": "A cacao farmer adds personally tailored guidance to their phone.",
+        # Drafts for this moment (§4.3 card table).
+        "cards": {"human-nature": "Human & Nature", "community": "Community", "policy": "Policy"},
     },
 }
 
-CARDS = [
-    ("human-nature", "Human & Nature"),
-    ("community", "Community"),
-    ("policy", "Policy"),
-]
+# The three card roles, front to back. A role sets the card's id, its default order and its
+# tint; what the card is called comes from CONTENT.
+CARD_ROLES = ["human-nature", "community", "policy"]
 
 SIGNIFICANCE = ["primary", "strong", "supporting"]
 
@@ -55,7 +56,7 @@ ORCHESTRATOR_SIZE = (128, 208)
 ALT = {
     "human-nature": "A smallholder farmer in a cacao field holding a smartphone (placeholder art).",
     "community": "A farmer, an extension agent and a student, the adults holding smartphones (placeholder art).",
-    "policy": "A mayor and a national government representative with plans and maps (placeholder art).",
+    "policy": "A mayor and a national government representative working from a plan and a map (placeholder art).",
 }
 
 def load_site():
@@ -78,7 +79,7 @@ def indent(block, spaces):
 
 
 def statement_html(moment):
-    content = STATEMENTS.get(moment["slug"])
+    content = CONTENT.get(moment["slug"])
     if content:
         lines = [
             f'<p class="eyebrow">{html.escape(content["eyebrow"])}</p>',
@@ -111,8 +112,15 @@ def layer_html(art, card, layer, cls):
 
 def cards_html(moment):
     art = ART.get(moment["slug"])
+    labels = CONTENT.get(moment["slug"], {}).get("cards", {})
     out = []
-    for slot, (slug, label) in enumerate(CARDS):
+    for slot, slug in enumerate(CARD_ROLES):
+        label = labels.get(slug, "")
+        label_html = (
+            html.escape(label)
+            if label
+            else '<span class="visually-hidden">Card label placeholder</span><span class="ph ph--bar ph--w-40" aria-hidden="true"></span>'
+        )
         hidden = " data-front" if slot == 0 else ' aria-hidden="true" inert'
         bg = (
             f'\n      <img class="stack-card__bg" src="{art}card-{slug}-bg.svg" width="512" height="384" alt="" decoding="async">\n    '
@@ -125,7 +133,7 @@ def cards_html(moment):
   <div class="stack-card__backplate">
     <div class="stack-card__scene">{bg}</div>
     <div class="stack-card__text">
-      <p class="stack-card__label">{html.escape(label)}</p>
+      <p class="stack-card__label">{label_html}</p>
       <p class="stack-card__caption">{html.escape(CAPTION_PLACEHOLDER)}</p>
     </div>
   </div>

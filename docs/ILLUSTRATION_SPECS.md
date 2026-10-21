@@ -30,6 +30,8 @@ The art lives in a **640 × 480 art frame** at 1×, pinned to the top of each ca
 - **Layer order**, back to front: background → figure → overhang start → overhang end.
 - **No lever markers on the cards** (no badges or pills; REQUIREMENTS §4.4), so the scene has no corner to keep clear.
 - **No phone screens.** People hold their phones, but the screens face them, not the viewer, and no layer shows a screen (Stage 2 review).
+- **Card labels are authored per moment** (REQUIREMENTS §4.3, Stage 2 review). The label in the caption band ("Human & Nature", "Community", "Policy" on this page) is the moment's own text and may differ on other moments. The art never depends on it: no label text, initials or role names in any layer. The three card *roles* (Human & Nature, Community, Policy) are what set each card's subject and colour ramp below.
+- **Nothing presented to the viewer.** No layer shows a phone screen, chart, report or data display facing the viewer (Stage 2 review). Plans and maps may appear as objects people are working from.
 - **Back cards** show only a strip: Community peeks out on the **left**, Policy **above and to the right**. The overhang-start and figure layers are what read on those strips, so give them strong silhouettes.
 
 ## Accent ramps (§6.4, §7)
@@ -111,7 +113,7 @@ Depicts a smallholder farmer using a smartphone in their cacao field. Cacao pods
 
 ## Card 2: Community (`card-community`)
 
-Depicts another farmer and an extension agent (both holding smartphones, screens turned toward them) and a student.
+Depicts two or three community members, for example another farmer, an extension agent and a student; anyone holding a smartphone has the screen turned toward themselves.
 
 ### `card-community-bg.svg`
 
@@ -131,7 +133,7 @@ Depicts another farmer and an extension agent (both holding smartphones, screens
 
 | | |
 | --- | --- |
-| Layer role | Figure group: a farmer, a local partner's extension agent, a student |
+| Layer role | Figure group: **two or three** community members, for example a farmer, a local partner's extension agent and a student |
 | Overflows | **Top edge by 32px** |
 | Placement | (320, 16) |
 | 1× / 2× | **192 × 320** / **384 × 640** |
@@ -139,7 +141,7 @@ Depicts another farmer and an extension agent (both holding smartphones, screens
 | Accent ramp | `cyan-700`, `cyan-500`, natural skin tones |
 | Alt text | "A farmer and a local extension agent talk over advice on their phones while a student looks on." |
 
-> **Brief:** Three people standing close together, full length, flat style: a farmer and an extension agent (with a partner-organisation lanyard, no logo) each holding a smartphone and talking it over (screens face them, not the viewer), and a student beside them looking on. Mixed ages and genders, from a tropical farming community, relaxed and collegial. Clothing in cyan-700 and cyan-500. The tallest head reaches the top 64px of the canvas. A narrow canvas, so overlap the figures. No text. Transparent, 384 × 640.
+> **Brief:** Two or three community members standing close together, full length, flat style, for example a farmer and an extension agent (with a partner-organisation lanyard, no logo) each holding a smartphone and talking it over, with the screens turned toward themselves (never toward the viewer), and a student beside them looking on. Mixed ages and genders, from a tropical farming community, relaxed and collegial. Clothing in cyan-700 and cyan-500. The tallest head reaches the top 64px of the canvas. A narrow canvas, so overlap the figures. No text. Transparent, 384 × 640.
 
 ### `card-community-overhang-start.svg`
 
@@ -173,7 +175,7 @@ Depicts another farmer and an extension agent (both holding smartphones, screens
 
 ## Card 3: Policy (`card-policy`)
 
-Depicts a mayor and a national government representative with plans, maps and data-driven reports.
+Depicts two people, a mayor and a national government representative, with the plans and maps they are working from. Nothing presents a screen, chart or report toward the viewer.
 
 ### `card-policy-bg.svg`
 
@@ -193,15 +195,15 @@ Depicts a mayor and a national government representative with plans, maps and da
 
 | | |
 | --- | --- |
-| Layer role | Figure pair: a mayor and a national government representative |
+| Layer role | Figure pair: **two people**, a mayor and a national government representative, with the plans and maps they are working from |
 | Overflows | **Top edge by 32px** |
 | Placement | (320, 16) |
 | 1× / 2× | **192 × 320** / **384 × 640** |
 | Background | Transparent |
 | Accent ramp | `orange-700`, `orange-500`, natural skin tones |
-| Alt text | "A mayor and a national government representative review a land-use plan together." |
+| Alt text | "A mayor and a national government representative work from a land-use plan and a map together." |
 
-> **Brief:** Two officials standing full length, flat style: a local mayor (sash optional, no insignia) and a national government representative holding a rolled plan and a tablet, studying a document together. Professional but approachable, from a tropical country, not tied to one nation. Clothing in orange-700 and orange-500. The taller head reaches the top 64px. No text. Transparent, 384 × 640.
+> **Brief:** Two officials standing full length, flat style: a local mayor (sash optional, no insignia) and a national government representative, working together from a partly unrolled land-use plan and a folded map that they hold between them. No tablet or screen, and the plan's face is toward them, not the viewer. Professional but approachable, from a tropical country, not tied to one nation. Clothing in orange-700 and orange-500. The taller head reaches the top 64px. No text. Transparent, 384 × 640.
 
 ### `card-policy-overhang-start.svg`
 
@@ -221,7 +223,7 @@ Depicts a mayor and a national government representative with plans, maps and da
 
 | | |
 | --- | --- |
-| Layer role | Foreground props breaking the right edge: a data report |
+| Layer role | Foreground props breaking the right edge: a rolled plan and an official seal (civic, not data) |
 | Overflows | **Right by 56px**. Rests on the scene's bottom line; never into the caption band. |
 | Placement | (456, 272) |
 | 1× / 2× | **176 × 160** / **352 × 320** |
@@ -229,7 +231,7 @@ Depicts a mayor and a national government representative with plans, maps and da
 | Accent ramp | `orange-700`, `orange-500` |
 | Alt text | none (decorative) |
 
-> **Brief:** A clipboard or printed report with a simple bar chart and a map pin (shapes only, **no readable text or numbers**), and a stamp or seal shape beside it. Flat orange-700 and orange-500. Standing on the bottom edge of the canvas. Transparent, 352 × 320.
+> **Brief:** A rolled-up plan tied with a ribbon, lying at an angle with a second roll behind it, and a round official seal or stamp beside them (a plain emblem shape, **no text, numbers or national insignia**). No clipboard, chart, report or screen. Flat orange-700 and orange-500. Resting on the bottom edge of the canvas. Transparent, 352 × 320.
 
 ---
 
@@ -271,7 +273,8 @@ The canvas is **128 × 208** at 1× (13 : 8). It renders 128px wide on desktop (
 
 - [ ] Each file matches its canvas exactly (1× or 2× as above) and has a transparent background.
 - [ ] Every overhang stays within its listed edges, nothing reaches past the 640 × 480 art frame, and nothing drops below the scene's bottom line (y 432).
-- [ ] No phone screen is visible to the viewer in any layer.
+- [ ] No phone screen, chart, report or data display faces the viewer in any layer.
+- [ ] No layer contains card label text or depends on it (labels are authored per moment).
 - [ ] No text, numbers or logos in any art.
 - [ ] Colours stay inside the card's ramp; the orchestrator's grip point is at (64, 108).
 - [ ] Each asset is logged in `assets/CREDITS.md` with its source and licence.

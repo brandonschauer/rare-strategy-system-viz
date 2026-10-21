@@ -40,7 +40,8 @@ def c(token):
 
 
 # Overhang-end props per card. Human & Nature: cacao pods and a leaf. Community: a seedling in a
-# pot with foliage. Policy: a clipboard report. Shapes only; the people hold the phones.
+# pot with foliage. Policy: a rolled plan and an official seal. Shapes only: nothing shows a
+# screen, chart or report to the viewer, and the people hold the phones.
 OVERHANG_END = {
     "human-nature": lambda base, ink, extra: f"""<!-- cacao pods {base} / {ink}, leaf {extra} -->
 <path d="M96 8 Q104 40 88 64" fill="none" stroke="{c(ink)}" stroke-width="6" stroke-linecap="round"/>
@@ -54,13 +55,50 @@ OVERHANG_END = {
 <ellipse cx="68" cy="56" rx="22" ry="11" transform="rotate(24 68 56)" fill="{c(base)}"/>
 <ellipse cx="108" cy="44" rx="24" ry="11" transform="rotate(-28 108 44)" fill="{c(base)}"/>
 <path d="M52 108 H124 L112 160 H64 Z" fill="{c(ink)}"/>""",
-    "policy": lambda base, ink, extra: f"""<!-- report {ink} / {base} -->
-<rect x="24" y="16" width="96" height="136" rx="10" fill="{c(ink)}"/>
-<rect x="36" y="36" width="72" height="104" rx="4" fill="{c(base)}"/>
-<rect x="48" y="96" width="12" height="32" fill="{c(ink)}"/>
-<rect x="68" y="76" width="12" height="52" fill="{c(ink)}"/>
-<rect x="88" y="56" width="12" height="72" fill="{c(ink)}"/>
-<circle cx="144" cy="128" r="24" fill="{c(base)}"/>""",
+    "policy": lambda base, ink, extra: f"""<!-- rolled plan {base} / {ink}, official seal {ink} -->
+<rect x="16" y="112" width="120" height="36" rx="18" transform="rotate(-12 76 130)" fill="{c(base)}"/>
+<ellipse cx="22" cy="142" rx="10" ry="18" transform="rotate(-12 22 142)" fill="{c(ink)}"/>
+<rect x="56" y="76" width="96" height="28" rx="14" transform="rotate(8 104 90)" fill="{c(base)}" fill-opacity="0.8"/>
+<circle cx="140" cy="132" r="26" fill="{c(ink)}"/>
+<circle cx="140" cy="132" r="16" fill="none" stroke="{c(base)}" stroke-width="4"/>""",
+}
+
+
+def person(cx, top, scale, fill, accent=None):
+    """A standing silhouette: head, body, legs, and optionally a phone held toward the person."""
+    s = scale
+    head = f'<circle cx="{cx}" cy="{top + 36 * s:.0f}" r="{30 * s:.0f}" fill="{fill}"/>'
+    body = f'<rect x="{cx - 44 * s:.0f}" y="{top + 72 * s:.0f}" width="{88 * s:.0f}" height="{128 * s:.0f}" rx="{34 * s:.0f}" fill="{fill}"/>'
+    legs = (
+        f'<rect x="{cx - 34 * s:.0f}" y="{top + 186 * s:.0f}" width="{26 * s:.0f}" height="{84 * s:.0f}" rx="{10 * s:.0f}" fill="{fill}"/>'
+        f'<rect x="{cx + 8 * s:.0f}" y="{top + 186 * s:.0f}" width="{26 * s:.0f}" height="{84 * s:.0f}" rx="{10 * s:.0f}" fill="{fill}"/>'
+    )
+    # The phone's back only: its screen faces the person (no screens toward the viewer).
+    phone = (
+        f'<rect x="{cx + 28 * s:.0f}" y="{top + 104 * s:.0f}" width="{30 * s:.0f}" height="{50 * s:.0f}" rx="{6 * s:.0f}" fill="{accent}"/>'
+        if accent
+        else ""
+    )
+    return head + body + legs + phone
+
+
+# Figure layers per card. Human & Nature: one farmer with a phone. Community: three people
+# overlapping, the adults with phones. Policy: two people, one holding a rolled plan.
+FIGURE = {
+    "human-nature": lambda base, ink, extra: f"""<!-- one farmer {ink}, phone back {base} -->
+<circle cx="96" cy="48" r="36" fill="{c(ink)}"/>
+<rect x="44" y="92" width="104" height="148" rx="40" fill="{c(ink)}"/>
+<rect x="56" y="224" width="32" height="96" rx="12" fill="{c(ink)}"/>
+<rect x="104" y="224" width="32" height="96" rx="12" fill="{c(ink)}"/>
+<rect x="116" y="132" width="40" height="64" rx="8" fill="{c(base)}"/>""",
+    "community": lambda base, ink, extra: f"""<!-- three people overlapping: {base} behind, {ink} in front -->
+{person(146, 40, 1.0, c(base))}
+{person(48, 26, 1.05, c(ink), c(base))}
+{person(104, 0, 1.15, c(ink), c(base))}""",
+    "policy": lambda base, ink, extra: f"""<!-- two people {base} / {ink}, rolled plan {base} -->
+{person(132, 14, 1.1, c(base))}
+{person(64, 0, 1.15, c(ink))}
+<rect x="76" y="140" width="96" height="22" rx="11" transform="rotate(-18 124 151)" fill="{c(base)}"/>""",
 }
 
 
@@ -74,13 +112,7 @@ def main():
 <path d="M0 312 Q160 272 320 304 T512 300 V384 H0 Z" fill="{c(extra)}" fill-opacity="0.35"/>""",
             "background, no overflow")
         # Figure: 192 x 320, breaks the backplate's top edge by 32px.
-        svg(f"card-{card}-figure.svg", 192, 320, f"""<!-- {ink} -->
-<circle cx="96" cy="48" r="36" fill="{c(ink)}"/>
-<rect x="44" y="92" width="104" height="148" rx="40" fill="{c(ink)}"/>
-<rect x="56" y="224" width="32" height="96" rx="12" fill="{c(ink)}"/>
-<rect x="104" y="224" width="32" height="96" rx="12" fill="{c(ink)}"/>
-<rect x="116" y="132" width="40" height="64" rx="8" fill="{c(base)}"/>""",
-            "figure, breaks the top edge")
+        svg(f"card-{card}-figure.svg", 192, 320, FIGURE[card](base, ink, extra), "figure, breaks the top edge")
         # Overhang start: 192 x 160, breaks the left edge by 56px and the top by 40px.
         svg(f"card-{card}-overhang-start.svg", 192, 160, f"""<!-- {base} / {extra} -->
 <ellipse cx="72" cy="56" rx="64" ry="28" transform="rotate(-24 72 56)" fill="{c(base)}"/>
